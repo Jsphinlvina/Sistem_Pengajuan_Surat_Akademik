@@ -15,26 +15,15 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('login-admin', function (){
+    return view('auth.login-admin');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-//Route::middleware(['auth'])
-//    ->get('/dashboard', function () {
-//
-//        if (auth()->user()->role == 0) {
-//            return app(AdminDashboardController::class)->index();
-//        }
-//
-//        if (auth()->user()->role == 1) {
-//            return app(StaffDashboardController::class)->index();
-//        }
-//
-//        abort(403);
-//    })
-//    ->name('dashboard');
 
 // Dashboard
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index'] )->name('dashboard');

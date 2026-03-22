@@ -6,14 +6,14 @@
     <div>
       <div class="mb-5 sm:mb-8">
         <h1 class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-          Login
+          Selamat Datang Admin
         </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Masukkan NRP dan Password untuk Login!
+          Masukkan Kode User dan Password untuk Login!
         </p>
       </div>
       <div>
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login-admin') }}">
           @csrf
           <div class="space-y-5">
             <!-- Kode User -->
@@ -21,10 +21,10 @@
               <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                 Kode User<span class="text-error-500">*</span>
               </label>
-              <input type="text" id="username" name="username" placeholder="2272001"
+              <input type="text" id="kode" name="kode" placeholder="2272001"
                 class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
             </div>
-            @error('username')
+            @error('kode')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
             <!-- Password -->

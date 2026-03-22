@@ -7,13 +7,13 @@ Route::post('/login', function (Request $request) {
     $username = $request->username;
     $password = $request->password;
 
-    if ($username === 'ADM001' && $password === 'password') {
+    if ($username === 'STF001' && $password === 'password') {
         return response()->json([
             'status' => 'success',
             'token' => 'dummy_token_123456',
             'user' => [
                 'username' => $username,
-                'name' => 'Admin Utama',
+                'name' => 'Staff Akademik',
             ]
         ]);
     }

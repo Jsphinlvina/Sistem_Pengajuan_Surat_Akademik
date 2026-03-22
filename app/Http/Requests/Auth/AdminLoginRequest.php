@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+class AdminLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string'],
+            'kode' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -38,18 +38,18 @@ class LoginRequest extends FormRequest
      *
      * @throws ValidationException
      */
-//    public function authenticate(): void
-//    {
-//        $this->ensureIsNotRateLimited();
-//
-//        if (! Auth::attempt($this->only('kode', 'password'), $this->boolean('remember'))) {
-//            RateLimiter::hit($this->throttleKey());
-//            throw ValidationException::withMessages([
-//                'kode' => trans('auth.failed'),
-//            ]);
-//        }
-//        RateLimiter::clear($this->throttleKey());
-//    }
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        if (! Auth::attempt(['kode' => $this->kode, 'password' => $this->password, 'role'=> 0], $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'kode' => trans('auth.failed'),
+            ]);
+        }
+        RateLimiter::clear($this->throttleKey());
+    }
 
     /**
      * Ensure the login request is not rate limited.
@@ -67,7 +67,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'username' => trans('auth.throttle', [
+            'kode' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -79,6 +79,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('username')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('kode')).'|'.$this->ip());
     }
 }
