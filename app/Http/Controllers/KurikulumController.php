@@ -142,17 +142,18 @@ class KurikulumController extends Controller
             'status' => 'required|boolean',
         ]);
 
-        if ($data['status'] == true) {
+        if ($data['status']) {
 
-            $oldKurikulum = Kurikulum::where('program_studi_id', $kurikulum->program_studi_id)
+            $activeKurikulum  = Kurikulum::where('program_studi_id', $kurikulum->program_studi_id)
                 ->where('id', '!=', $kurikulum->id)
                 ->where('status', true)
                 ->first();
 
-            if ($oldKurikulum) {
-                $oldKurikulum->update([
-                    'status' => false
-                ]);
+            if ($activeKurikulum ) {
+                return back()->with(
+                    'error',
+                    "Tidak dapat mengaktifkan kurikulum. Kurikulum '{ $activeKurikulum->nama }' sedang aktif"
+                );
             }
         }
 
@@ -163,12 +164,32 @@ class KurikulumController extends Controller
             ->with('success', 'Kurikulum berhasil diperbarui');
     }
 
-    public function updateStatus(Request $request, Kurikulum $kurikululm)
+    public function updateStatus(Request $request, Kurikulum $kurikulum)
     {
-        $kurikululm->status = $request->status;
-        $kurikululm->save();
+        $request->validate([
+            'status' => 'required|boolean'
+        ]);
 
-        return back();
+        if ($request->status) {
+
+            $activeKurikulum = Kurikulum::where('program_studi_id', $kurikulum->program_studi_id)
+                ->where('status', true)
+                ->where('id', '!=', $kurikulum->id)
+                ->first();
+
+            if ($activeKurikulum) {
+                return back()->with(
+                    'error',
+                    "Tidak dapat mengaktifkan kurikulum. Kurikulum '{$activeKurikulum->nama}' sedang aktif."
+                );
+            }
+        }
+
+        $kurikulum->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status kurikulum berhasil diperbarui.');
     }
 
     /**

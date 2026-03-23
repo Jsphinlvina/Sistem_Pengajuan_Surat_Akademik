@@ -57,20 +57,24 @@ $isEdit = $mode === 'edit';
                     Edit Kurikulum
                 </a>
                 <x-comfirm-delete :action="route('kurikulum.destroy', $kurikulum->id)" message="Yakin ingin menghapus Kurikulum ini?">
-                          <x-slot:trigger>
-                            <a class="ms-4 px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 hover:bg-error-600">
-                                Hapus Kurikulum
-                             </a>
-                          </x-slot:trigger>
-                       </x-comfirm-delete>
+                  <x-slot:trigger>
+                    <a class="ms-4 px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 hover:bg-error-600">
+                        Hapus Kurikulum
+                     </a>
+                  </x-slot:trigger>
+               </x-comfirm-delete>
                 @endif
             </div>
         </form>
         @if($isEdit)
         <div class="rounded-2xl border bg-white p-6 mt-8">
-            <h3 class="text-base mb-4">
-                Import Data Mata Kuliah
-            </h3>
+            <div class="justify-between flex items-center mb-4">
+            <h3 class="text-base">Import Data Mata Kuliah</h3>
+             <a class="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-gray-400 shadow-theme-xs hover:bg-gray-600"
+                href="{{ route('mata-kuliah.template.download') }}">
+                Unduh Template
+             </a>
+          </div>
             <form action="{{ route('kurikulum.mata-kuliah.import', $kurikulum) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf

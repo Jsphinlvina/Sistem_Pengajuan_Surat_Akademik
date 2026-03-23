@@ -32,8 +32,12 @@ Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index
 // Admin
 Route::middleware(['auth', 'role:0'])->group(function () {
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'] )->name('admin.dashboard');
+
+    //User
     Route::resource('user', UserController::class);
     Route::patch('/user/{user}/status',[UserController::class, 'updateStatus'])->name('user.status');
+
+    // Program Studi
     Route::resource('program-studi', ProgramStudiController::class);
     Route::patch('/program-studi/{programStudi}/status',[ProgramStudiController::class, 'updateStatus'])->name('program-studi.status');
 });
@@ -41,15 +45,26 @@ Route::middleware(['auth', 'role:0'])->group(function () {
 // Staff
 Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/staff/dashboard', [StaffDashboardController::class, 'index'] )->name('staff.dashboard');
+    // Mata Kuliah
     Route::resource('mata-kuliah', MatakuliahController::class);
+    Route::get('/mata-kuliah/template/download', function (){
+       $path = storage_path('app/templates/template_import_mata_kuliah.xlsx');
+       return response()->download($path, 'template_import_mata_kuliah.xlsx');
+    })->name('mata-kuliah.template.download');
+
+    // Periode Semester
     Route::resource('periode-semester', PeriodeSemesterController::class);
+
+    // Mahasiswa
     Route::resource('mahasiswa', MahasiswaController::class);
+
+    // Kurikulum
     Route::resource('kurikulum', KurikulumController::class);
     Route::post('/kurikulum/{kurikulum}/mata-kuliah/import', [KurikulumController::class, 'importMataKuliah'])
         ->name('kurikulum.mata-kuliah.import');
     Route::post('/kurikulum/{kurikulum}/mata-kuliah/store-import', [KurikulumController::class, 'storeImportMataKuliah'])
         ->name('kurikulum.mata-kuliah.store-import');
-    Route::patch('/kuriklum/{kurikulum}/status',[KurikulumController::class, 'updateStatus'])->name('kurikulum.status');
+    Route::patch('/kurikulum/{kurikulum}/status',[KurikulumController::class, 'updateStatus'])->name('kurikulum.status');
 });
 
 
