@@ -35,7 +35,6 @@ class MataKuliahController extends Controller
             'kode' => 'required|string|max:50|unique:mata_kuliahs,kode',
             'nama' => 'required|string|max:255|unique:mata_kuliahs,nama',
             'kurikulum_id' => 'required|exists:kurikulums,id',
-            'status' => 'required|boolean',
         ]);
 
         MataKuliah::create($data);
@@ -67,7 +66,6 @@ class MataKuliahController extends Controller
         $data = $request->validate([
             'kode' => 'required|string|max:50|unique:mata_kuliahs,kode,' . $mataKuliah->id,
             'nama' => 'required|string|max:255|unique:mata_kuliahs,nama,' . $mataKuliah->id,
-            'status' => 'required|boolean',
         ]);
         $mataKuliah->update($data);
         return redirect()->route('kurikulum.show', $mataKuliah->kurikulum_id)->with('success', 'Data Mata Kuliah Berhasil Diupdate');

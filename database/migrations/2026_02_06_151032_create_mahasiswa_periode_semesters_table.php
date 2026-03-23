@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mahasiswa_periode_semester');
+        Schema::dropIfExists('mahasiswa_periode_semesters');
     }
 };

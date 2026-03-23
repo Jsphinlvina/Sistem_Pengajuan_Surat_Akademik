@@ -61,7 +61,7 @@
          </td>
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
-               <a href="{{ route('kurikulum.edit', $kurikulum) }}">
+               <a href="{{ route('kurikulum.show', $kurikulum) }}">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      class="stroke-gray-500 me-4 pb-1" stroke="currentColor" width="20" height="20">
                      <path stroke-linecap="round" stroke-linejoin="round"
@@ -77,15 +77,15 @@
                      </svg>
                   </x-slot:trigger>
                </x-comfirm-delete>
-                <form method="POST" action="{{ route('user.status', $user->id) }}" class="flex item-center ms-4">
+                <form method="POST" action="{{ route('kurikulum.status', $kurikulum->id) }}" class="flex item-center ms-4">
                     @csrf
                     @method('PATCH')
 
-                    <input type="hidden" name="status" value="{{ $user->status ? 0 : 1 }}">
+                    <input type="hidden" name="status" value="{{ $kurikulum->status ? 0 : 1 }}">
 
                     <button type="submit" class="cursor-pointer">
 
-                        @if ($user->status)
+                        @if ($kurikulum->status)
                             <svg width="20" height="20" class="stroke-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />

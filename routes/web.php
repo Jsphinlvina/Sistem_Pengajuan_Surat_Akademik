@@ -10,6 +10,7 @@ use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StaffDashboardController;
+use App\Http\Controllers\PeriodeSemesterController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
         ->name('kurikulum.mata-kuliah.import');
     Route::post('/kurikulum/{kurikulum}/mata-kuliah/store-import', [KurikulumController::class, 'storeImportMataKuliah'])
         ->name('kurikulum.mata-kuliah.store-import');
+    Route::patch('/kuriklum/{kurikulum}/status',[KurikulumController::class, 'updateStatus'])->name('kurikulum.status');
 });
 
 

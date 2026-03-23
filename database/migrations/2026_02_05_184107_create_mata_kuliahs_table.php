@@ -22,7 +22,6 @@ return new class extends Migration
                   ->on('kurikulums')
                   ->restrictOnDelete();
 
-            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

@@ -31,10 +31,6 @@
       </button>
       <!-- Hamburger Toggle BTN -->
 
-      <a href="index.html" class="lg:hidden">
-        <img class="dark:hidden" src="{{ asset('./images/logo/logo.svg')}}" alt="Logo" />
-      </a>
-
       <!-- Application nav menu button -->
       <button
         class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 lg:hidden dark:text-gray-400 dark:hover:bg-gray-800"
@@ -91,7 +87,7 @@
                 <a class="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
                   href="#">
                   <span class="relative z-1 block h-10 w-full max-w-10 rounded-full">
-                    <img src="{{ asset('./images/user/user-02.jpg')}}" alt="User" class="overflow-hidden rounded-full" />
+{{--                    <img src="{{ asset('./images/user/user-02.jpg')}}" alt="User" class="overflow-hidden rounded-full" />--}}
                     <span
                       class="bg-success-500 absolute right-0 bottom-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white dark:border-gray-900"></span>
                   </span>

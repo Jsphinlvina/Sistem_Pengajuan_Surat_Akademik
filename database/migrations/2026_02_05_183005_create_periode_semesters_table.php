@@ -16,6 +16,13 @@ return new class extends Migration
             $table->string('nama')->unique();
             $table->boolean('status')->default(true);
             $table->string('kaprodi');
+
+            $table->unsignedSmallInteger('program_studi_id');
+            $table->foreign('program_studi_id')
+                  ->references('id')
+                  ->on('program_studis')
+                  ->restrictOnDelete();
+
             $table->timestamps();
         });
     }

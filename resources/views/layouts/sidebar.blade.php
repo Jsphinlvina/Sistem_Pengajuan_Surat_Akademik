@@ -12,13 +12,13 @@ $isMahasiswaActive = request()->routeIs('mahasiswa.index');
   <!-- SIDEBAR HEADER -->
   <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
     class="sidebar-header flex items-center gap-2 pb-7 pt-8">
-    <a href="index.html">
+    <a href="{{ route('dashboard') }}">
       <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
-        <img class="dark:hidden" src="{{asset('./image/logo.svg')}}" alt="Logo" />
+        <img src="{{asset('./image/logo.webp')}}" alt="Logo" />
       </span>
 
       <img class="logo-icon" :class="sidebarToggle ? 'lg:block' : 'hidden'"
-        src="{{asset('./images/logo/logo-icon.svg')}}" alt="Logo" />
+        src="{{asset('./image/logo-icon.webp')}}" alt="Logo" />
     </a>
   </div>
   <!-- SIDEBAR HEADER -->

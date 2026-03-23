@@ -15,7 +15,9 @@ class KurikulumController extends Controller
      */
     public function index()
     {
-        $kurikulums = Kurikulum::with('programStudi')->get();
+        $kurikulums = Kurikulum::with('programStudi')
+            ->whereBelongsTo(auth()->user()->programStudi)
+            ->get();
         return view('pages.kurikulum.index', compact('kurikulums'));
     }
 
@@ -105,7 +107,6 @@ class KurikulumController extends Controller
                 'kode' => $row['kode'],
                 'nama' => $row['nama'],
                 'kurikulum_id' => $kurikulum->id,
-                'status' => $kurikulum->status
             ]);
         }
         return redirect()
@@ -149,16 +150,10 @@ class KurikulumController extends Controller
                 ->first();
 
             if ($oldKurikulum) {
-                $oldKurikulum->update(['status' => false]);
-
-                MataKuliah::where('kurikulum_id', $oldKurikulum->id)
-                    ->update(['status' => false]);
+                $oldKurikulum->update([
+                    'status' => false
+                ]);
             }
-        }
-
-        if ($data['status'] == false) {
-            MataKuliah::where('kurikulum_id', $kurikulum->id)
-                ->update(['status'=> false]);
         }
 
         $kurikulum->update($data);
@@ -168,17 +163,23 @@ class KurikulumController extends Controller
             ->with('success', 'Kurikulum berhasil diperbarui');
     }
 
+    public function updateStatus(Request $request, Kurikulum $kurikululm)
+    {
+        $kurikululm->status = $request->status;
+        $kurikululm->save();
+
+        return back();
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Kurikulum $kurikulum)
     {
-        $deleted = $kurikulum->smartDeleteCascade();
-        return redirect()
-            ->route('kurikulum.index')
-            ->with(
-                $deleted ? 'success' : 'info',
-                $deleted ? 'Kurikulum berhasil dihapus permanen' : 'Kurikulum dinonaktifkan karena sebagaian mata kulaih sudah digunakan'
-            );
+        $deleted = $kurikulum->smartDelete(['mataKuliah']);
+        return redirect()->route('kurikulum.index')->with(
+            $deleted ? 'success' : 'info',
+            $deleted ? 'Kurikulum berhasil dihapus permanen' : 'Kurikulum tidak dapat dihapus karena data sudah digunakan'
+        );
     }
 }
