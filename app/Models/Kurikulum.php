@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongToProgramStudi;
 use App\Concerns\SmartDelete;
 use Illuminate\Database\Eloquent\Model;
 
 class Kurikulum extends Model
 {
     use SmartDelete;
+    use BelongToProgramStudi;
+
     protected $fillable = [
         'nama', 'status', 'program_studi_id'
     ];

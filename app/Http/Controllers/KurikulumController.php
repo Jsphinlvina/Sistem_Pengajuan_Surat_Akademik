@@ -10,14 +10,16 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class KurikulumController extends Controller
 {
+    public function __construct(){
+        $this->authorizeResource(Kurikulum::class, 'kurikulum');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $kurikulums = Kurikulum::with('programStudi')
-            ->whereBelongsTo(auth()->user()->programStudi)
-            ->get();
+        $kurikulums = Kurikulum::all();
         return view('pages.kurikulum.index', compact('kurikulums'));
     }
 
@@ -31,6 +33,8 @@ class KurikulumController extends Controller
 
     public function importMataKuliah(Request $request, Kurikulum $kurikulum)
     {
+        $this->authorize('update', $kurikulum);
+
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
@@ -91,6 +95,8 @@ class KurikulumController extends Controller
 
     public function storeImportMataKuliah(Request $request, Kurikulum $kurikulum)
     {
+        $this->authorize('update', $kurikulum);
+
         $data = json_decode($request->data, true);
 
         foreach ($data as $row) {
@@ -166,6 +172,8 @@ class KurikulumController extends Controller
 
     public function updateStatus(Request $request, Kurikulum $kurikulum)
     {
+        $this->authorize('update', $kurikulum);
+
         $request->validate([
             'status' => 'required|boolean'
         ]);

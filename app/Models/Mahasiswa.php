@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongToProgramStudi;
 use Illuminate\Database\Eloquent\Model;
 
 class Mahasiswa extends Model
 {
+    use BelongToProgramStudi;
+
     protected $fillable = [
       'nama', 'email', 'nrp', 'alamat', 'program_studi_id'
     ];

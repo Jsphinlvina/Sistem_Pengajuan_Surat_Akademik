@@ -22,8 +22,7 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        $programStudis = ProgramStudi::all();
-        return view('pages.mahasiswa.create', compact('programStudis'));
+        return view('pages.mahasiswa.create');
     }
 
     /**
@@ -35,10 +34,17 @@ class MahasiswaController extends Controller
            'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:mahasiswas',
             'nrp'=> 'required|string|max:7',
-            'program_studi_id'=> 'required|exists:program_studi,id',
         ]);
 
-        Mahasiswa::create($data);
+        $programStudi = auth()->user()->program_studi_id;
+
+        Mahasiswa::create([
+            'nama' => $data['nama'],
+            'email' => $data['email'],
+            'nrp' => $data['nrp'],
+            'program_studi_id' => $programStudi,
+        ]);
+
         return redirect()->route('mahasiswa.index')->with('success', 'Data Mahasiswa berhasil ditambahkan');
     }
 
