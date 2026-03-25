@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 class Pengajuan extends Model
 {
     use SmartDelete;
-    use BelongToProgramStudi;
 
     const status_dalam_pengajuan = 0;
     const status_dalam_proses = 1;

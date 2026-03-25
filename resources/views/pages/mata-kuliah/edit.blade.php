@@ -13,8 +13,8 @@
             @csrf
             @method('PUT')
             <div class="grid grid-cols-2 gap-6 mb-6">
-                <x-form-input name="kode" label="Kode User" :value="$mataKuliah?->kode" placeholder="720001" />
-                <x-form-input name="nama" label="Nama User" :value="$mataKuliah?->nama" placeholder="John Doe" />
+                <x-form-input name="kode" label="Kode Mata Kuliah" :value="$mataKuliah?->kode" :readonly="true" placeholder="IN252" />
+                <x-form-input name="nama" label="Nama Mata Kuliah" :value="$mataKuliah?->nama" placeholder="DESAIN ANTARMUKA" />
             </div>
 
             <div class="mt-10">

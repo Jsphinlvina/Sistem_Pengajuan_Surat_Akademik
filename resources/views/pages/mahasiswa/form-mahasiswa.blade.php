@@ -75,18 +75,6 @@ $isEdit = $mode === 'edit';
                     class="px-4 py-3 text-sm font-medium text-white rounded-lg bg-yellow-500 hover:bg-yellow-600">
                     Edit Mahasiswa
                 </a>
-
-                <form action="{{ route('mahasiswa.destroy', $mahasiswa->id) }}" method="POST" class="inline">
-                    @csrf
-                    @method('DELETE')
-
-                    <button
-                        type="submit"
-                        onclick="return confirm('Yakin ingin menghapus Mahasiswa ini?')"
-                        class="ms-4 px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 hover:bg-error-600">
-                        Hapus Mahasiswa
-                    </button>
-                </form>
                 @endif
             </div>
 

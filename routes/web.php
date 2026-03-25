@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:0'])->group(function () {
 // Staff
 Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/staff/dashboard', [StaffDashboardController::class, 'index'] )->name('staff.dashboard');
+
     // Mata Kuliah
     Route::resource('mata-kuliah', MatakuliahController::class);
     Route::get('/mata-kuliah/template/download', function (){
