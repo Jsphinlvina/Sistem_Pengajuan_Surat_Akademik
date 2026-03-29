@@ -12,7 +12,7 @@ class PeriodeSemester extends Model
     use BelongToProgramStudi;
 
     protected $fillable = [
-        'nama', 'status', 'kaprodi'
+        'nama', 'status', 'kaprodi', 'program_studi_id'
     ];
 
     public function mahasiswaPeriodeSemester(){

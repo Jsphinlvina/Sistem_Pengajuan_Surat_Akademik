@@ -36,14 +36,9 @@ class MahasiswaController extends Controller
             'nrp'=> 'required|string|max:7',
         ]);
 
-        $programStudi = auth()->user()->program_studi_id;
+        $data['program_studi_id'] = auth()->user()->program_studi_id;
 
-        Mahasiswa::create([
-            'nama' => $data['nama'],
-            'email' => $data['email'],
-            'nrp' => $data['nrp'],
-            'program_studi_id' => $programStudi,
-        ]);
+        Mahasiswa::create($data);
 
         return redirect()->route('mahasiswa.index')->with('success', 'Data Mahasiswa berhasil ditambahkan');
     }

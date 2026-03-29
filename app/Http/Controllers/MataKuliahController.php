@@ -76,11 +76,10 @@ class MataKuliahController extends Controller
      */
     public function destroy(MataKuliah $mataKuliah)
     {
-        $kurikulumId = $mataKuliah->kurikulum_id;
         $deleted = $mataKuliah->smartDelete(['pengajuan']);
 
         return redirect()
-            ->route('kurikulum.show', $kurikulumId)
+            ->route('kurikulum.show', $mataKuliah->kurikulum_id)
             ->with(
                 $deleted ? 'success' : 'error',
                 $deleted ? 'Mata kuliah berhasil dihapus' : 'Mata kuliah tidak dapat dihapus karena data sudah digunakan'

@@ -31,7 +31,7 @@ $isEdit = $mode === 'edit';
                 <div>
                     @if($isEdit || $isShow)
                     <x-form-select name="status" label="Status Kurikulum" :disabled="$isShow"
-                        :value="$kurikulum?->status ?? 'staff' " :options="[
+                        :value="$kurikulum?->status ?? '-' " :options="[
                             1 => 'Aktif',
                             0 => 'Tidak Aktif'
                         ]" />
@@ -175,6 +175,7 @@ $isEdit = $mode === 'edit';
                             {{$mataKuliah->kode}}
                         </p>
                     </div>
+                </td>
                 <td class="px-5 py-4 sm:px-6">
                     <div class="flex items-center">
                         <p class="text-gray-500 text-theme-sm dark:text-gray-400">

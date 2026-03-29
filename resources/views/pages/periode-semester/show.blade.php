@@ -1,9 +1,9 @@
 @extends('starter')
-@section('title', 'Detail Kurikulum')
+@section('title', 'Detail Periode Semester')
 @section('content')
 
-@include('pages.kurikulum.form-kurikulum', [
-    'kurikulum' => $kurikulum,
+@include('pages.periode-semester.form-periode', [
+    'periodeSemester' => $periodeSemester,
     'mode'=>'show'
 ])
 

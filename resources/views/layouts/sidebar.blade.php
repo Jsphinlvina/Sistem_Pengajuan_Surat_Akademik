@@ -17,9 +17,6 @@ $isMahasiswaActive = request()->routeIs('mahasiswa.index');
       <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
         <img src="{{asset('./image/logo.webp')}}" alt="Logo" />
       </span>
-
-      <img class="logo-icon" :class="sidebarToggle ? 'lg:block' : 'hidden'"
-        src="{{asset('./image/logo-icon.webp')}}" alt="Logo" />
     </a>
   </div>
   <!-- SIDEBAR HEADER -->

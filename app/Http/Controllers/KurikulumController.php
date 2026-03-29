@@ -186,8 +186,7 @@ class KurikulumController extends Controller
                 ->first();
 
             if ($activeKurikulum) {
-                return back()->with(
-                    'error',
+                return back()->with('error',
                     "Tidak dapat mengaktifkan kurikulum. Kurikulum '{$activeKurikulum->nama}' sedang aktif."
                 );
             }
@@ -207,7 +206,7 @@ class KurikulumController extends Controller
     {
         $deleted = $kurikulum->smartDelete(['mataKuliah']);
         return redirect()->route('kurikulum.index')->with(
-            $deleted ? 'success' : 'info',
+            $deleted ? 'success' : 'error',
             $deleted ? 'Kurikulum berhasil dihapus permanen' : 'Kurikulum tidak dapat dihapus karena data sudah digunakan'
         );
     }

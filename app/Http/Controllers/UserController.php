@@ -101,7 +101,7 @@ class UserController extends Controller
         $deleted = $user->smartDelete(['pengajuan']);
 
         return redirect()->route('user.index')->with(
-            $deleted ? 'success' : 'info',
+            $deleted ? 'success' : 'error',
             $deleted ? 'User berhasil dihapus' : 'User tidak dapat dihapus karena sudah digunakan'
           );
     }

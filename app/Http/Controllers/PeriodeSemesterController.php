@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mahasiswa;
+use App\Models\MahasiswaPeriodeSemester;
 use App\Models\PeriodeSemester;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PeriodeSemesterController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(PeriodeSemester::class, 'periode_semester');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $periodeSemesters = PeriodeSemester::all();
-        return view('periode-semester.index', compact('periodeSemesters'));
+        return view('pages.periode-semester.index', compact('periodeSemesters'));
     }
 
     /**
@@ -21,7 +29,42 @@ class PeriodeSemesterController extends Controller
      */
     public function create()
     {
-        return view('periode-semester.create');
+        return view('pages.periode-semester.create');
+    }
+
+    public function importMahasiswaPeriodeSemester(Request $request, PeriodeSemester $periodeSemester)
+    {
+        $this->authorize('update', $periodeSemester);
+
+        $request->validate([
+           'file' => 'required|mimes:xls,xlsx, csv'
+        ]);
+
+        try {
+            $row = Excel::toArray([], $request->file('file'));
+
+            $data = collect($row[0])
+                ->skip(1)
+                ->map(function ($row) {
+                    return [
+                        'nrp' => $row[0] ?? null,
+                        'status' => $row[1] ?? null,
+                        'deskripsi' => $row[2] ?? null,
+                    ];
+                })
+                ->filter(fn($row) => $row['nrp'] && $row['status'])
+                ->values()
+                ->toArray();
+
+            return redirect()
+                ->route('periode-semester.edit', $periodeSemester)
+                ->with('preview_mahasiswa_periode', $data);
+
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('periode-semester.edit', $periodeSemester)
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -29,14 +72,68 @@ class PeriodeSemesterController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'nama' => 'required|unique:periode_semesters|max:255',
-            'status' =>'required|boolean',
             'kaprodi'=> 'required|string|max:255'
         ]);
 
-        PeriodeSemester::create($data);
-        return redirect()->route('periode-semester.index')->with('success', 'Data Periode Semester Berhasil Dibuat');
+       $programStudiId = auth()->user()->program_studi_id;
+
+        $isActive = PeriodeSemester::where('program_studi_id', $programStudiId)
+            ->where('status', true)
+            ->exists();
+
+        $periodeSemester = PeriodeSemester::create([
+           'nama' => $request->nama,
+           'kaprodi' => $request->kaprodi,
+           'program_studi_id' => $programStudiId,
+            'status' => $isActive ? false : true,
+        ]);
+
+        return redirect()
+            ->route('periode-semester.edit',$periodeSemester)
+            ->with('success', 'Data Periode Semester berhasil dibuat');
+    }
+
+    public function storeImportMahasiswaPeriodeSemester(Request $request, PeriodeSemester $periodeSemester)
+    {
+        $this->authorize('update', $periodeSemester);
+
+        $data = json_decode($request->data, true);
+
+        foreach ($data as $row) {
+            $mahasiswa = Mahasiswa::where('program_studi_id', auth()->user()->program_studi_id)
+                ->where('nrp', $row['nrp'])
+                ->first();
+
+            if (!$mahasiswa) {
+                return back()->with(
+                    'error', "Import Gagal : NRP '{$row['nrp']}' tidak ditemukan."
+                );
+            }
+
+             $exists = MahasiswaPeriodeSemester::where('mahasiswa_id', $mahasiswa->id)
+                ->where('periode_semester_id', $periodeSemester->id)
+                ->exists();
+
+            if ($exists) {
+                return back()->with(
+                    'error', "Import Gagal : Mahasiswa dengan NRP '{$row['nrp']}' sudah ada pada periode ini."
+                );
+            }
+
+            $status = MahasiswaPeriodeSemester::convertStatus($row['status']);
+
+            MahasiswaPeriodeSemester::create([
+                'mahasiswa_id' => $mahasiswa->id,
+                'periode_semester_id' => $periodeSemester->id,
+                'status' => $status,
+                'deskripsi' => $row['deskripsi'] ?? null,
+            ]);
+        }
+        return redirect()
+            ->route('periode-semester.show', $periodeSemester)
+            ->with('success', 'Data mahasiswa berhasil diimport');
     }
 
     /**
@@ -44,7 +141,8 @@ class PeriodeSemesterController extends Controller
      */
     public function show(PeriodeSemester $periodeSemester)
     {
-        return view('periode-semester.show', compact('periodeSemester'));
+        $periodeSemester->load('mahasiswaPeriodeSemester.mahasiswa');
+        return view('pages.periode-semester.show', compact('periodeSemester'));
     }
 
     /**
@@ -52,7 +150,8 @@ class PeriodeSemesterController extends Controller
      */
     public function edit(PeriodeSemester $periodeSemester)
     {
-        return view('periode-semester.edit', compact('periodeSemester'));
+        $periodeSemester->load('mahasiswaPeriodeSemester');
+        return view('pages.periode-semester.edit', compact('periodeSemester'));
     }
 
     /**
@@ -70,12 +169,39 @@ class PeriodeSemesterController extends Controller
         return redirect()->route('periode-semester.index')->with('success', 'Data Periode Semester Berhasil Diupdate');
     }
 
+    public function updateStatus(Request $request, PeriodeSemester $periodeSemester)
+    {
+        $this->authorize('update', $periodeSemester);
+
+        $request->validate([
+            'status' => 'required|boolean'
+        ]);
+
+        if ($request->status){
+
+            $activePeriode = PeriodeSemester::where('program_studi_id', $periodeSemester->program_studi_id)
+                ->where('status', true)
+                ->where('id', '!=', $periodeSemester->id)
+                ->first();
+
+            if ($activePeriode){
+                return back()->with('error',
+                    "Tidak dapat mengaktifkan periode semester. Periode Semester '{$activePeriode->nama}' sedang aktif.");
+            }
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(PeriodeSemester $periodeSemester)
     {
-        $periodeSemester->delete();
-        return redirect()->route('periode-semester.index')->with('success', 'Data Periode Semester Berhasil Dihapus');
+        $deleted = $periodeSemester->smartDelete(['mahasiswaPeriodeSemester', 'pengajuan']);
+        return redirect()
+            ->route('periode-semester.index')
+            ->with(
+                $deleted ? 'success' : 'error',
+                $deleted ? 'Periode Semester berhasil dihapus' : 'Periode Semester tidak dapat dihapus karena data sudah digunakan'
+            );
     }
 }

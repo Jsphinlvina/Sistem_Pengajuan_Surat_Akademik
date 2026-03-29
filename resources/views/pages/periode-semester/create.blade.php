@@ -1,8 +1,8 @@
 @extends('starter')
-@section('title', 'Tambah Kurikulum')
+@section('title', 'Tambah Periode Semester')
 @section('content')
 
-@include('pages.kurikulum.form-kurikulum', [
+@include('pages.periode-semester.form-periode', [
     'mode'=>'create'
 ])
 

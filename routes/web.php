@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\PeriodeSemesterController;
+use App\Http\Controllers\MahasiswaPeriodeSemesterController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -39,7 +40,7 @@ Route::middleware(['auth', 'role:0'])->group(function () {
 
     // Program Studi
     Route::resource('program-studi', ProgramStudiController::class);
-    Route::patch('/program-studi/{programStudi}/status',[ProgramStudiController::class, 'updateStatus'])->name('program-studi.status');
+    Route::patch('/program-studi/{program_studi}/status',[ProgramStudiController::class, 'updateStatus'])->name('program-studi.status');
 });
 
 // Staff
@@ -55,6 +56,18 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
     // Periode Semester
     Route::resource('periode-semester', PeriodeSemesterController::class);
+    Route::post('/periode-semester/{periode_semester}/mahasiswa-periode-semester/import', [PeriodeSemesterController::class, 'importMahasiswaPeriodeSemester'])
+        ->name('periode-semester.mahasiswa-periode-semester.import');
+    Route::post('/periode-semester/{periode_semester}/mahasiswa-periode-semester/store-import', [PeriodeSemesterController::class, 'storeImportMahasiswaPeriodeSemester'])
+        ->name('periode-semester.mahasiswa-periode-semester.store-import');
+    Route::patch('/periode-semester/{periode_semester}/status', [PeriodeSemesterController::class, 'updateStatus'])->name('periode-semester.status');
+
+    // Mahasiswa Periode
+    Route::resource('mahasiswa-periode-semester', MahasiswaPeriodeSemesterController::class);
+    Route::get('/mahasiswa-periode-semester/template/download', function (){
+       $path = storage_path('app/templates/template_import_mahasiswa_periode.xlsx');
+       return response()->download($path, 'template_import_mahasiswa_periode.xlsx');
+    })->name('mahasiswa-periode-semester.template.download');
 
     // Mahasiswa
     Route::resource('mahasiswa', MahasiswaController::class);

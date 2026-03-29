@@ -65,10 +65,8 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function edit(MahasiswaPeriodeSemester $mahasiswaPeriodeSemester)
     {
-        $mahasiswas = Mahasiswa::with('programStudi')->get();
-        $periodeSemesters = PeriodeSemester::all();
-
-        return view('mahasiswa-periode-semester.edit', compact('mahasiswaPeriodeSemester','mahasiswas','periodeSemesters'));
+        $mahasiswaPeriodeSemester->load('mahasiswa');
+        return view('pages.mahasiswa-periode.edit', compact('mahasiswaPeriodeSemester'));
     }
 
     /**
@@ -77,20 +75,23 @@ class MahasiswaPeriodeSemesterController extends Controller
     public function update(Request $request, MahasiswaPeriodeSemester $mahasiswaPeriodeSemester)
     {
         $data = $request->validate([
-        'mahasiswa_id' => [
-            'required',
-            'exists:mahasiswas,id',
-            Rule::unique('mahasiswa_periode_semester')
-                ->where('periode_semester_id', request('periode_semester_id'))
-                ->ignore($mahasiswaPeriodeSemester->id),
-        ],
-        'periode_semester_id' => 'required|exists:periode_semesters,id',
-        'status' => 'required|in:aktif,cuti,lulus,drop_out',
-        'deskripsi' => 'required|string|max:255',
+            'status' => 'required|integer',
+            'deskripsi' => 'required|string|max:255',
         ]);
 
         $mahasiswaPeriodeSemester->update($data);
-        return redirect()->route('mahasiswa-periode-semester.index')->with('success', 'Data berhasil diupdate');
+        return redirect()
+            ->route('periode-semester.show', $mahasiswaPeriodeSemester->periode_semester_id)
+            ->with('success', 'Data Mahasiswa berhasil diupdate');
+    }
+
+    public function updateStatus(Request $request, MahasiswaPeriodeSemester $mahasiswaPeriodeSemester){
+        $request->validate([
+            'status' => 'required|integer'
+        ]);
+
+        $mahasiswaPeriodeSemester->update($request->only('status'));
+        return back()->with('success', 'Status Mahasiswa berhasil diperbaharui');
     }
 
     /**
@@ -98,7 +99,10 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function destroy(MahasiswaPeriodeSemester $mahasiswaPeriodeSemester)
     {
-        $mahasiswaPeriodeSemester->delete();
-        return redirect()->route('mahasiswa-periode-semester.index')->with('success', 'Data Periode Mahsiswa berhasil dihapus');
+        $deleted = $mahasiswaPeriodeSemester->delete();
+
+        return redirect()
+            ->route('periode-semester.show', $mahasiswaPeriodeSemester->periode_semester_id)
+            ->with('success', 'Data Periode Mahsiswa berhasil dihapus');
     }
 }
