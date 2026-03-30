@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class MahasiswaController extends Controller
 {
+    public function __construct(){
+        $this->authorizeResource(Mahasiswa::class, 'mahasiswa');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,6 +27,11 @@ class MahasiswaController extends Controller
     public function create()
     {
         return view('pages.mahasiswa.create');
+    }
+
+    public function importMahasiswa()
+    {
+
     }
 
     /**

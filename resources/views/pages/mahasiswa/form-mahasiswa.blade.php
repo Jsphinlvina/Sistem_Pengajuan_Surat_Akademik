@@ -23,38 +23,37 @@ $isEdit = $mode === 'edit';
             @csrf
             @if($isEdit)
             @method('PUT')
-            @endif
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <x-form-input name="kode" label="Kode User" :value="$mahasiswa?->nrp" :readonly="$isShow"
+                        placeholder="720001" />
 
-            <div class="grid grid-cols-2 gap-6 mb-6">
-                <x-form-input name="kode" label="Kode User" :value="$mahasiswa?->nrp" :readonly="$isShow"
-                    placeholder="720001" />
+                    <x-form-input name="name" label="Nama User" :value="$mahasiswa?->nama" :readonly="$isShow"
+                        placeholder="John Doe" />
+                </div>
 
-                <x-form-input name="name" label="Nama User" :value="$mahasiswa?->nama" :readonly="$isShow"
-                    placeholder="John Doe" />
-            </div>
+                <div class="mb-6">
+                    <x-form-input name="email" label="Email" type="email" :value="$mahasiswa?->email"
+                        :readonly="$isShow || $isEdit" placeholder="info@gmail.com" />
+                </div>
 
-            <div class="mb-6">
-                <x-form-input name="email" label="Email" type="email" :value="$mahasiswa?->email"
-                    :readonly="$isShow || $isEdit" placeholder="info@gmail.com" />
-            </div>
+                @if(!$isShow)
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <div class="mb-6">
+                            <x-form-input type="password" name="password" label="Password"
+                                placeholder="Minimal 8 karakter" />
+                        </div>
 
-            @if(!$isShow)
-            <div class="grid grid-cols-2 gap-6">
-                <div>
-                    <div class="mb-6">
-                        <x-form-input type="password" name="password" label="Password"
-                            placeholder="Minimal 8 karakter" />
+                        <x-form-input type="password" name="password_confirmation" label="Confirm Password"
+                            placeholder="Masukkan kembali password" />
                     </div>
 
-                    <x-form-input type="password" name="password_confirmation" label="Confirm Password"
-                        placeholder="Masukkan kembali password" />
+                    <div>
+                        <x-form-select name="program_studi_id" label="Program Studi" :value="$mahasiswa?->program_studi_id"
+                            :options="$programStudis->pluck('nama', 'id')" :disabled="$isShow" />
+                    </div>
                 </div>
-
-                <div>
-                    <x-form-select name="program_studi_id" label="Program Studi" :value="$mahasiswa?->program_studi_id"
-                        :options="$programStudis->pluck('nama', 'id')" :disabled="$isShow" />
-                </div>
-            </div>
+                @endif
             @endif
 
             <div class="mt-10">
