@@ -49,7 +49,6 @@ class PeriodeSemesterController extends Controller
                     return [
                         'nrp' => $row[0] ?? null,
                         'status' => $row[1] ?? null,
-                        'deskripsi' => $row[2] ?? null,
                     ];
                 })
                 ->filter(fn($row) => $row['nrp'] && $row['status'])
@@ -74,10 +73,21 @@ class PeriodeSemesterController extends Controller
     {
         $request->validate([
             'nama' => 'required|unique:periode_semesters|max:255',
-            'kaprodi'=> 'required|string|max:255'
+            'dosen_id' => 'required',
         ]);
 
-       $programStudiId = auth()->user()->program_studi_id;
+        $programStudiId = auth()->user()->program_studi_id;
+
+        $exists = PeriodeSemester::where('program_studi_id', $programStudiId)
+            ->where('nama', $request->nama)
+            ->exists();
+
+        if ($exists){
+            return back()->with(
+              'error',
+              "Nama periode '{ $request->nama }' sudah ada di dalam Program Studi ini"
+            );
+        }
 
         $isActive = PeriodeSemester::where('program_studi_id', $programStudiId)
             ->where('status', true)
@@ -85,7 +95,7 @@ class PeriodeSemesterController extends Controller
 
         $periodeSemester = PeriodeSemester::create([
            'nama' => $request->nama,
-           'kaprodi' => $request->kaprodi,
+           'dosen_id' => $request->dosen_id,
            'program_studi_id' => $programStudiId,
             'status' => $isActive ? false : true,
         ]);
@@ -122,12 +132,10 @@ class PeriodeSemesterController extends Controller
                 );
             }
 
-            $status = MahasiswaPeriodeSemester::convertStatus($row['status']);
-
             MahasiswaPeriodeSemester::create([
                 'mahasiswa_id' => $mahasiswa->id,
                 'periode_semester_id' => $periodeSemester->id,
-                'status' => $status,
+                'status' => $row['status'] ?? 1,
                 'deskripsi' => $row['deskripsi'] ?? null,
             ]);
         }

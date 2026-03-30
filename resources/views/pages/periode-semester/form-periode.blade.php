@@ -137,7 +137,7 @@ $isEdit = $mode === 'edit';
                         <td class="px-5 py-4 sm:px-6">
                             <div class="flex items-center">
                                 <p class="text-gray-500 capitalize text-theme-sm dark:text-gray-400">
-                                    {{ $mp['status'] }}
+                                    {{ \App\Models\MahasiswaPeriodeSemester::mapping[$mk['status']] ?? 'Tidak ada' }}
                                 </p>
                             </div>
                         </td>

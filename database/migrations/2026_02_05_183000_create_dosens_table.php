@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('periode_semesters', function (Blueprint $table) {
+        Schema::create('dosens', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('nama');
-            $table->boolean('status')->default(true);
-
-            $table->unsignedSmallInteger('dosen_id');
-            $table->foreign('dosen_id')
-                  ->references('id')
-                  ->on('dosens')
-                  ->restrictOnDelete();
+            $table->string('nik')->unique();
 
             $table->unsignedSmallInteger('program_studi_id');
             $table->foreign('program_studi_id')
@@ -37,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('periode_semesters');
+        Schema::dropIfExists('dosens');
     }
 };

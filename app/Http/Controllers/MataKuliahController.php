@@ -38,7 +38,8 @@ class MataKuliahController extends Controller
         ]);
 
         MataKuliah::create($data);
-        return redirect()->route('mata-kuliah.index')->with('success', 'Data Mata Kuliah Berhasil Ditambahkan');
+        return redirect()->route('mata-kuliah.index')
+            ->with('success', 'Data Mata Kuliah Berhasil Ditambahkan');
     }
 
     /**
@@ -47,7 +48,7 @@ class MataKuliahController extends Controller
     public function show(MataKuliah $mataKuliah)
     {
         $mataKuliah->load('kurikulum');
-        return view('mata-kuliah.show', compact('mataKuliah'));
+        return view('pages.mata-kuliah.show', compact('mataKuliah'));
     }
 
     /**

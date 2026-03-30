@@ -48,7 +48,9 @@ class MahasiswaPeriodeSemesterController extends Controller
         ]);
 
         MahasiswaPeriodeSemester::create($data);
-        return redirect()->route('mahasiswa-periode-semester.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()
+            ->route('mahasiswa-periode-semester.index')
+            ->with('success', 'Data Status Mahasisaw berhasil ditambahkan');
     }
 
     /**
@@ -76,7 +78,6 @@ class MahasiswaPeriodeSemesterController extends Controller
     {
         $data = $request->validate([
             'status' => 'required|integer',
-            'deskripsi' => 'required|string|max:255',
         ]);
 
         $mahasiswaPeriodeSemester->update($data);

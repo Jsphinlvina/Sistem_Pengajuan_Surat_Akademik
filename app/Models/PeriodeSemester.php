@@ -12,7 +12,7 @@ class PeriodeSemester extends Model
     use BelongToProgramStudi;
 
     protected $fillable = [
-        'nama', 'status', 'kaprodi', 'program_studi_id'
+        'nama', 'status', 'dosen_id', 'program_studi_id'
     ];
 
     public function mahasiswaPeriodeSemester(){
@@ -25,5 +25,9 @@ class PeriodeSemester extends Model
 
     public function scopeActive($query){
         return $query->where('status', 'aktif');
+    }
+
+    public function dosen(){
+        return $this->belongsTo(Dosen::class);
     }
 }

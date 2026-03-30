@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DosenController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -71,6 +72,9 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
     // Mahasiswa
     Route::resource('mahasiswa', MahasiswaController::class);
+
+    // Dosen
+    Route::resource('dosen', DosenController::class);
 
     // Kurikulum
     Route::resource('kurikulum', KurikulumController::class);
