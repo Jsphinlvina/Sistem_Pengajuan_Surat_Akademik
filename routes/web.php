@@ -75,6 +75,12 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
     // Dosen
     Route::resource('dosen', DosenController::class);
+    Route::post('/dosen/import', [DosenController::class, 'import'])
+    ->name('dosen.import');
+    Route::get('/dosen/template/download', function (){
+       $path = storage_path('app/templates/template_import_dosen.xlsx');
+       return response()->download($path, 'template_import_dosen.xlsx');
+    })->name('dosen.template.download');
 
     // Kurikulum
     Route::resource('kurikulum', KurikulumController::class);

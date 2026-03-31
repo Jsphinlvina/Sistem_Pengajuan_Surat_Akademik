@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mahasiswa;
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MahasiswaController extends Controller
 {
@@ -17,7 +18,7 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        $mahasiswas = Mahasiswa::with('statusPeriodeAktif')->get();
+        $mahasiswas = Mahasiswa::all();
         return view('pages.mahasiswa.index', compact('mahasiswas'));
     }
 
@@ -29,9 +30,37 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.create');
     }
 
-    public function importMahasiswa()
+    public function import(Request $request)
     {
+        $this->authorize('create', Mahasiswa::class);
 
+        $request->validate([
+           'file' => 'required|mimes:xls,xlsx, csv'
+        ]);
+
+        try {
+            $row = Excel::toArray([], $request->file('file'));
+
+            $data = collect($row[0])
+                ->skip(1)
+                ->map(function ($row) {
+                    return [
+                        'nrp' => $row[0] ?? null,
+                        'nama' => $row[1] ?? null,
+                    ];
+                })
+                ->filter(fn($row) => $row['nrp'] && $row['nama'])
+                ->values()
+                ->toArray();
+
+            return redirect()->back()
+                ->with('preview_mahasiswa', $data);
+
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('mahasiswa.index')
+                ->with('error', $e->getMessage());
+        }
     }
 
     /**
