@@ -170,7 +170,7 @@ class PeriodeSemesterController extends Controller
         $data = $request->validate([
             'nama' => 'required|max:255|unique:periode_semesters,nama,' . $periodeSemester->id,
             'status' =>'required|boolean',
-            'kaprodi'=> 'required|string|max:255'
+            'dosen_id => 'required|integer'
         ]);
 
         $periodeSemester->update($data);
