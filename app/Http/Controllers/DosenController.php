@@ -36,7 +36,7 @@ class DosenController extends Controller
         $this->authorize('create', Dosen::class);
 
         $request->validate([
-           'file' => 'required|mimes:xls,xlsx, csv'
+           'file' => 'required|mimes:xls,xlsx,csv'
         ]);
 
         try {

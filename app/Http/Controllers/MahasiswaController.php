@@ -35,7 +35,7 @@ class MahasiswaController extends Controller
         $this->authorize('create', Mahasiswa::class);
 
         $request->validate([
-           'file' => 'required|mimes:xls,xlsx, csv'
+           'file' => 'required|mimes:xls,xlsx,csv'
         ]);
 
         try {
@@ -68,17 +68,30 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        $data =$request->validate([
-           'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:mahasiswas',
-            'nrp'=> 'required|string|max:7',
-        ]);
+       $data = json_decode($request->data, true);
 
-        $data['program_studi_id'] = auth()->user()->program_studi_id;
+       foreach ($data as $row){
 
-        Mahasiswa::create($data);
+           $exist = Mahasiswa::where('nrp', $row['nrp'])->exists();
 
-        return redirect()->route('mahasiswa.index')->with('success', 'Data Mahasiswa berhasil ditambahkan');
+           if($exist){
+               return back()->with(
+                       'error', "Import Gagal : Mahasiswa dengan NRP '{$row['nrp']}' sudah digunakan"
+                   );
+           }
+       }
+
+       $programStudiId = auth()->user()->program_studi_id;
+
+       Mahasiswa::create([
+           'nama' => $row['nama'],
+           'nrp' => $row['nrp'],
+           'program_studi_id' => $programStudiId,
+       ]);
+
+        return redirect()
+            ->route('mahasiswa.index')
+            ->with('success', 'Data Mahasiswa berhasil ditambahkan');
     }
 
     /**
@@ -86,7 +99,6 @@ class MahasiswaController extends Controller
      */
     public function show(Mahasiswa $mahasiswa)
     {
-        $mahasiswa->load('programStudi');
         return view('pages.mahasiswa.show', compact('mahasiswa'));
     }
 
@@ -95,8 +107,7 @@ class MahasiswaController extends Controller
      */
     public function edit(Mahasiswa $mahasiswa)
     {
-        $programStudis = ProgramStudi::all();
-        return view('pages.mahasiswa.edit', compact('mahasiswa', 'programStudis'));
+        return view('pages.mahasiswa.edit', compact('mahasiswa'));
     }
 
     /**
@@ -105,14 +116,16 @@ class MahasiswaController extends Controller
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
          $data =$request->validate([
-           'nama' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:mahasiswas,email,'. $mahasiswa->id,
             'nrp'=> 'required|string|max:7|unique:mahasiswas,nrp,'. $mahasiswa->id,
+            'alamat' => 'required|string|max:255',
             'program_studi_id'=> 'required|exists:program_studi,id',
         ]);
 
          $mahasiswa->update($data);
-         return redirect()->route('mahasiswa.index')->with('success', 'Data Mahasiswa berhasil diupdate');
+         return redirect()->route('mahasiswa.index')
+             ->with('success', 'Data Mahasiswa berhasil diupdate');
     }
 
     /**
@@ -120,7 +133,9 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-        $mahasiswa->delete();
-        return redirect()->route('mahasiswa.index')->with('success', 'Data Mahasiswa berhasil dihapus');
+        $mahasiswa->smartDelete(['pengajuan', 'mahasiswaPeriodeSemester']);
+        return redirect()
+            ->route('mahasiswa.index')
+            ->with('success', 'Data Mahasiswa berhasil dihapus');
     }
 }

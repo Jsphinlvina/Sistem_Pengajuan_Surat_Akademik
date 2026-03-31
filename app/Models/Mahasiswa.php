@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Concerns\BelongToProgramStudi;
+use App\Concerns\SmartDelete;
 use Illuminate\Database\Eloquent\Model;
 
 class Mahasiswa extends Model
 {
+    use SmartDelete;
     use BelongToProgramStudi;
 
     protected $fillable = [
@@ -23,12 +25,5 @@ class Mahasiswa extends Model
 
     public function mahasiswaPeriodeSemester(){
         return $this->hasMany(MahasiswaPeriodeSemester::class);
-    }
-
-    public function statusPeriodeAktif(){
-        return $this->hasOne(MahasiswaPeriodeSemester::class)
-        ->whereHas('periodeSemester', function($query){
-            $query->where('status', 'aktif');
-        });
     }
 }
