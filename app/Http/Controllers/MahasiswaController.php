@@ -47,6 +47,8 @@ class MahasiswaController extends Controller
                     return [
                         'nrp' => $row[0] ?? null,
                         'nama' => $row[1] ?? null,
+                        'email' => $row[2] ?? null,
+                        'alamat' => $row[3] ?? null,
                     ];
                 })
                 ->filter(fn($row) => $row['nrp'] && $row['nama'])
@@ -79,15 +81,17 @@ class MahasiswaController extends Controller
                        'error', "Import Gagal : Mahasiswa dengan NRP '{$row['nrp']}' sudah digunakan"
                    );
            }
+
+           $programStudiId = auth()->user()->program_studi_id;
+
+           Mahasiswa::create([
+               'nrp' => $row['nrp'],
+               'nama' => $row['nama'],
+               'email' => $row['email'],
+               'alamat' => $row['alamat'],
+               'program_studi_id' => $programStudiId,
+           ]);
        }
-
-       $programStudiId = auth()->user()->program_studi_id;
-
-       Mahasiswa::create([
-           'nama' => $row['nama'],
-           'nrp' => $row['nrp'],
-           'program_studi_id' => $programStudiId,
-       ]);
 
         return redirect()
             ->route('mahasiswa.index')
@@ -118,9 +122,8 @@ class MahasiswaController extends Controller
          $data =$request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:mahasiswas,email,'. $mahasiswa->id,
-            'nrp'=> 'required|string|max:7|unique:mahasiswas,nrp,'. $mahasiswa->id,
+            'nrp' => 'required|string|max:7|unique:mahasiswas,nrp,'. $mahasiswa->id,
             'alamat' => 'required|string|max:255',
-            'program_studi_id'=> 'required|exists:program_studi,id',
         ]);
 
          $mahasiswa->update($data);

@@ -72,6 +72,11 @@ Route::middleware(['auth', 'role:1'])->group(function () {
 
     // Mahasiswa
     Route::resource('mahasiswa', MahasiswaController::class);
+    Route::post('/mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
+    Route::get('/mahasiswa/template/download', function (){
+        $path = storage_path('app/templates/template_import_mahasiswa.xlsx');
+        return response()->download($path, 'template_import_mahasiswa.xlsx');
+    })->name('mahasiswa.template.download');
 
     // Dosen
     Route::resource('dosen', DosenController::class);

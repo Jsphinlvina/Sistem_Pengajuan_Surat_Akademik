@@ -3,7 +3,7 @@
 
 @section('content')
     @include('pages.mahasiswa.form-mahasiswa', [
-        'mode' => 'show',
         'mahasiswa' => $mahasiswa,
+        'mode' => 'show',
     ])
 @endsection

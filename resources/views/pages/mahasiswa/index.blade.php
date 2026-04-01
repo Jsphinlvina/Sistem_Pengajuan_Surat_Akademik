@@ -1,19 +1,19 @@
 @extends('starter')
-@section('title', 'Data Dosen')
+@section('title', 'Data Mahasiswa')
 @section('content')
 <x-table>
    {{-- Title Table --}}
    <x-slot:title>
       <div class="justify-between flex items-center">
-         <p>Data Dosen</p>
+         <p>Data Mahasiswa</p>
          <a class="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-emerald-500 shadow-theme-xs hover:bg-emerald-600"
-            href="{{ route('dosen.create') }}">
+            href="{{ route('mahasiswa.create') }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                stroke="currentColor" class="w-6 h-5 text-white">
                <path stroke-linecap="round" stroke-linejoin="round"
                   d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Import Data Dosen
+            Import Data Mahasiswa
          </a>
       </div>
    </x-slot:title>
@@ -22,7 +22,7 @@
    {{-- Head Table --}}
    <x-slot:head>
       <tr class="border-b border-gray-100 dark:border-gray-800">
-          @foreach(['No','NIK',' Nama Dosen', 'Action'] as $column)
+          @foreach(['No','NIK',' Nama Mahasiswa', 'Action'] as $column)
              <th class="px-5 py-3 sm:px-6">
                 <div class="flex items-center">
                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -37,7 +37,7 @@
 
    {{-- Item Table--}}
    <x-slot>
-      @foreach($dosens as $dosen)
+      @foreach($mahasiswas as $mahasiswa)
       <tr class=" odd:bg-gray-100">
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
@@ -49,26 +49,26 @@
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                  {{$dosen->nik}}
+                  {{$mahasiswa->nrp}}
                </p>
             </div>
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
                <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                  {{$dosen->nama}}
+                  {{$mahasiswa->nama}}
                </p>
             </div>
          </td>
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
-               <a href="{{ route('dosen.edit', $dosen) }}">
+               <a href="{{ route('mahasiswa.edit', $mahasiswa) }}">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      class="stroke-gray-500 me-4" stroke="currentColor" width="20" height="20">
                      <path stroke-linecap="round" stroke-linejoin="round"
                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                   </svg>
                </a>
-               <x-comfirm-delete :action="route('dosen.destroy', $dosen->id)" message="Yakin ingin menghapus Data Dosen ini?">
+               <x-comfirm-delete :action="route('mahasiswa.destroy', $mahasiswa->id)" message="Yakin ingin menghapus Data Mahasiswa ini?">
                   <x-slot:trigger>
                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" width="17" height="17" class="stroke-gray-500">

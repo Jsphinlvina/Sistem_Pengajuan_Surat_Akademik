@@ -57,7 +57,7 @@ $isEdit = $mode === 'edit';
                         <td class="px-5 py-4 sm:px-6">
                             <div class="flex items-center">
                                 <p class="text-gray-500 text-theme-sm dark:text-gray-400">
-                                    {{ $mahasiswa['nik'] }}
+                                    {{ $mahasiswa['nrp'] }}
                                 </p>
                             </div>
                         </td>
@@ -96,13 +96,19 @@ $isEdit = $mode === 'edit';
 
             <div class="grid grid-cols-2 gap-6">
             <div>
-                <x-form-input name="nik" label="NIK" :value="$mahasiswa?->nik" :readonly="$isEdit"
+                <x-form-input name="nrp" label="NRP" :value="$mahasiswa?->nrp" :readonly="$isEdit"
                     placeholder="72" />
             </div>
             <div>
                 <x-form-input name="nama" label="Nama Lengkap Mahasiswa" :value="$mahasiswa?->nama"
                     placeholder="John Doe" />
             </div>
+            </div>
+            <div class="grid mt-6">
+                <x-form-input name="email" type="email" label="Email" :value="$mahasiswa?->email" placeholder="2272001@maranatha.ac.id" />
+            </div>
+            <div class="grid mt-6">
+                <x-form-input name="alamat" label="Alamat" :value="$mahasiswa?->alamat" placeholder="Jl. Surya Sumantri No. 65" />
             </div>
             <div class="mt-10">
                 <button type="submit"

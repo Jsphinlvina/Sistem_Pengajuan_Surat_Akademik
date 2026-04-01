@@ -1,8 +1,8 @@
 @extends('starter')
-@section('title', 'Tambah Data Dosen')
+@section('title', 'Tambah Data Mahasiswa')
 
 @section('content')
-@include('pages.dosen.form-dosen', [
+@include('pages.mahasiswa.form-mahasiswa', [
     'mode' => 'create',
 ])
 @endsection
