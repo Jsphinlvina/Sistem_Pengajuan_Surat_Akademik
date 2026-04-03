@@ -41,10 +41,11 @@ $isEdit = $mode === 'edit';
             </div>
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                    <x-form-input name="kaprodi" label="Nama Kepala Program Studi" :value="$periodeSemester?->kaprodi"
-                        :readonly="$isShow" placeholder="John Doe" />
+                   <x-form-select name="dosen_id" label="Nama Kepala Program Studi" :disabled="$isShow"
+                        :value="$periodeSemester?->status ?? '-' " :options="$dosens" />
                 </div>
             </div>
+
             <div class="mt-10">
                 @if($mode === 'create')
                 <button type="submit"
@@ -137,7 +138,7 @@ $isEdit = $mode === 'edit';
                         <td class="px-5 py-4 sm:px-6">
                             <div class="flex items-center">
                                 <p class="text-gray-500 capitalize text-theme-sm dark:text-gray-400">
-                                    {{ \App\Models\MahasiswaPeriodeSemester::mapping[$mk['status']] ?? 'Tidak ada' }}
+                                    {{ \App\Models\MahasiswaPeriodeSemester::mapping[$mp['status']] ?? 'Tidak ada' }}
                                 </p>
                             </div>
                         </td>

@@ -15,7 +15,7 @@
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <x-form-input class="uppercase" name="kode" label="NRP dan Nama Mahasiswa" :value="$mahasiswaPeriodeSemester?->mahasiswa->nrp . ' ' . $mahasiswaPeriodeSemester?->mahasiswa->nama" :readonly="true"/>
                 <x-form-select name="status" label="Status Mahasiswa"
-                        :value="$mahasiswaPeriodeSemester?->status ?? '-' " :options="[
+                        :value="$mahasiswaPeriodeSemester?->status" :options="[
                             1 => 'Aktif',
                             0 => 'Cuti',
                             2 => 'Tanpa Kabar',

@@ -9,6 +9,7 @@
 
 @php
 $selectedValue = old($name, $value);
+$selectId = $attributes->get('id') ?? $name;
 @endphp
 
 <div>
@@ -18,9 +19,9 @@ $selectedValue = old($name, $value);
     </label>
     @endif
 
-    <select name="{{ $name }}" @if($disabled) disabled @endif {{ $attributes->merge([
+    <select id="{{ $selectId }}" name="{{ $name }}" @if($disabled) disabled @endif {{ $attributes->merge([
         'class' => '
-        h-11 w-full rounded-lg px-4 py-2.5 text-sm
+        tom-select w-full rounded-lg text-sm
         dark:text-white/90
         ' .
 
@@ -49,3 +50,16 @@ $selectedValue = old($name, $value);
     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
     @enderror
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    new TomSelect("#{{ $selectId }}",{
+        create:false,
+        placeholder:"Pilih {$label}",
+        sortField:{
+            field:"text",
+            direction:"asc"
+        }
+    });
+});
+</script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
 use App\Models\Mahasiswa;
 use App\Models\MahasiswaPeriodeSemester;
 use App\Models\PeriodeSemester;
@@ -29,7 +30,8 @@ class PeriodeSemesterController extends Controller
      */
     public function create()
     {
-        return view('pages.periode-semester.create');
+        $dosens = Dosen::pluck('nama', 'id');
+        return view('pages.periode-semester.create', compact('dosens'));
     }
 
     public function importMahasiswaPeriodeSemester(Request $request, PeriodeSemester $periodeSemester)
@@ -150,7 +152,8 @@ class PeriodeSemesterController extends Controller
     public function show(PeriodeSemester $periodeSemester)
     {
         $periodeSemester->load('mahasiswaPeriodeSemester.mahasiswa');
-        return view('pages.periode-semester.show', compact('periodeSemester'));
+        $dosens = Dosen::pluck('nama', 'id');
+        return view('pages.periode-semester.show', compact('periodeSemester', 'dosens'));
     }
 
     /**
@@ -158,8 +161,9 @@ class PeriodeSemesterController extends Controller
      */
     public function edit(PeriodeSemester $periodeSemester)
     {
+        $dosens = Dosen::pluck('nama', 'id');
         $periodeSemester->load('mahasiswaPeriodeSemester');
-        return view('pages.periode-semester.edit', compact('periodeSemester'));
+        return view('pages.periode-semester.edit', compact('periodeSemester', 'dosens'));
     }
 
     /**
@@ -169,8 +173,9 @@ class PeriodeSemesterController extends Controller
     {
         $data = $request->validate([
             'nama' => 'required|max:255|unique:periode_semesters,nama,' . $periodeSemester->id,
+            'dosen_id' => 'required',
             'status' =>'required|boolean',
-            'dosen_id => 'required|integer'
+
         ]);
 
         $periodeSemester->update($data);

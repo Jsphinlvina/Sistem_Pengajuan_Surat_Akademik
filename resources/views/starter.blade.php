@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="{{ asset('https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4') }}"></script>
+    <link href="{{ asset('https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css')}}" rel="stylesheet">
+    <script src="{{ asset('https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js')}}"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>@yield('title', 'Sistem Pengajuan Akademik Maranatha')</title>
 </head>
