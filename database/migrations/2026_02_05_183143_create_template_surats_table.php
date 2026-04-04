@@ -16,9 +16,16 @@ return new class extends Migration
             $table->string('nama')->unique();
             $table->string('kode')->unique();
             $table->string('deskripsi');
-            $table->string('xml_content');
+            $table->longText('xml_content');
             $table->string('dynamic_fields');
             $table->boolean('status')->default(true);
+
+            $table->unsignedSmallInteger('program_studi_id');
+            $table->foreign('program_studi_id')
+                  ->references('id')
+                  ->on('program_studis')
+                  ->restrictOnDelete();
+
             $table->timestamps();
         });
     }

@@ -12,7 +12,11 @@ class TemplateSurat extends Model
     use BelongToProgramStudi;
 
     protected $fillable = [
-        'nama', 'kode', 'deskripsi', 'xml_content', 'dynamic_fields', 'status'
+        'nama', 'kode', 'deskripsi', 'xml_content', 'dynamic_fields', 'status', 'program_studi_id'
+    ];
+
+    protected $casts = [
+        'dynamic_fields' => 'array',
     ];
 
     public function pengajuan(){

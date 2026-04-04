@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\PeriodeSemesterController;
 use App\Http\Controllers\MahasiswaPeriodeSemesterController;
+use App\Http\Controllers\TemplateSuratController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -94,6 +95,11 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::post('/kurikulum/{kurikulum}/mata-kuliah/store-import', [KurikulumController::class, 'storeImportMataKuliah'])
         ->name('kurikulum.mata-kuliah.store-import');
     Route::patch('/kurikulum/{kurikulum}/status',[KurikulumController::class, 'updateStatus'])->name('kurikulum.status');
+
+    // Template Surat
+    Route::resource('template-surat', TemplateSuratController::class);
+    Route::get('/template-surat/{templateSurat}/preview', [TemplateSuratController::class, 'preview'])->name('template-surat.preview');
+    Route::patch('/template-surat/{templateSurat}/status',[TemplateSuratController::class, 'updateStatus'])->name('template-surat.status');
 });
 
 

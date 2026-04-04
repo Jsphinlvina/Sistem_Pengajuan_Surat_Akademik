@@ -62,7 +62,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $programStudis = ProgramStudi::all();
+        $programStudis = ProgramStudi::where('status', 1)->get();
         return view('pages.user.edit', compact('user', 'programStudis'));
     }
 
