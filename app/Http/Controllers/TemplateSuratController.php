@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\TemplateSurat;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+\Carbon\Carbon::setLocale('id');
 
 class TemplateSuratController extends Controller
 {
@@ -25,10 +28,34 @@ class TemplateSuratController extends Controller
 
     private function renderTemplate($content, $data)
     {
-        foreach ($data as $key => $value) {
-            $content = str_replace('{{'.$key.'}}', $value, $content);
+        if (isset($data['mahasiswa'])) {
+            $pattern = '/{{#mahasiswa}}(.*?){{\/mahasiswa}}/s';
+
+            $content = preg_replace_callback($pattern, function ($matches) use ($data) {
+
+                $rowTemplate = $matches[1];
+                $result = '';
+
+                foreach ($data['mahasiswa'] as $index => $mhs) {
+                    $row = $rowTemplate;
+                    foreach ($mhs as $key => $value) {
+                        $row = str_replace('{{'.$key.'}}', $value, $row);
+                    }
+
+                    $row = str_replace('{{no}}', $index + 1, $row);
+                    $result .= $row;
+                }
+                return $result;
+            }, $content);
         }
 
+        foreach ($data as $key => $value) {
+
+            if (!is_array($value)) {
+                $content = str_replace('{{'.$key.'}}', $value, $content);
+            }
+
+        }
         return $content;
     }
 
@@ -82,13 +109,43 @@ class TemplateSuratController extends Controller
 
     public function preview(TemplateSurat $templateSurat)
     {
-        $this->authorize('show', $templateSurat);
+        $this->authorize('view', $templateSurat);
 
         $data = [
+            'kode_surat' => '123/SK/TI/2025',
+            'nama_kaprodi' => 'Dr. Andi Wijaya',
+            'nik_kaprodi' => '1987654321',
+
+            'mahasiswa' => [
+                [
+                    'no' => 1,
+                    'nama' => 'Budi Santoso',
+                    'nrp' => '2272001'
+                ],
+                [
+                    'no' => 2,
+                    'nama' => 'Andi Wijaya',
+                    'nrp' => '2272002'
+                ]
+            ],
+
             'nama_mahasiswa' => 'Budi Santoso',
-            'nrp' => '2272001',
-            'program_studi' => 'Teknik Informatika',
-            'tanggal' => now()->format('d F Y')
+            'nrp_mahasiswa' => '2272001',
+
+            'tanggal_lulus' => Carbon::parse('2024-12-25')->translatedFormat('d F Y'),
+
+            'periode_semester' => 'Ganjil 2025/2026',
+            'alamat_mahasiswa' => 'Jl. Merdeka No. 10 Bandung',
+            'keperluan_surat' => 'Pengajuan Beasiswa',
+
+            'nama_mata_kuliah' => 'Pemrograman Web',
+            'kode_mata_kuliah' => 'IF101',
+
+            'nama_dituju' => 'John Doe',
+            'jabatan_dituju' => 'CEO of The Company',
+            'topik_tugas' => 'Analisis Bisnis Operasional',
+
+            'tanggal_surat' => now()->format('d F Y'),
         ];
 
         $content = $this->renderTemplate($templateSurat->xml_content, $data);
@@ -114,11 +171,10 @@ class TemplateSuratController extends Controller
     public function update(Request $request, TemplateSurat $templateSurat)
     {
         $data = $request->validate([
-           'nama' => 'required|max:255|unique:template_surats,nama' . $templateSurat->id,
+           'nama' => 'required|max:255|unique:template_surats,nama,' . $templateSurat->id,
            'kode'=> 'required|max:50|unique:template_surats,kode,' . $templateSurat->id,
            'deskripsi' => 'required|string|max:255',
            'xml_content'=> 'required',
-            'status' => 'required|boolean',
         ]);
 
         $data['kode'] = strtoupper($data['kode']);

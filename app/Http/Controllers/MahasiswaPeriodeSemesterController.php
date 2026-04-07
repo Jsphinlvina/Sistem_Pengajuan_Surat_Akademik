@@ -15,8 +15,7 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function index()
     {
-        $mahasiswaPeriodeSemesters = MahasiswaPeriodeSemester::with('mahasiswa','periodeSemester');
-        return view('mahasiswa-periode-semester.index', compact('mahasiswaPeriodeSemesters'));
+       //
     }
 
     /**
@@ -24,10 +23,7 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function create()
     {
-        $mahasiswas = Mahasiswa::with('programStudi')->get();
-        $periodeSemesters = PeriodeSemester::all();
-
-        return view('mahasiswa-periode-semester.create', compact('mahasiswas','periodeSemesters'));
+        //
     }
 
     /**
@@ -35,22 +31,7 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'mahasiswa_id' => [
-                'required',
-                'exists:mahasiswas,id',
-                Rule::unique('mahasiswa_periode_semester')
-                    ->where('periode_semester_id', request('periode_semester_id')),
-            ],
-            'periode_semester_id' => 'required|exists:periode_semesters,id',
-            'status' => 'required|in:aktif,cuti,lulus,drop_out',
-            'deskripsi' => 'required|string|max:255',
-        ]);
-
-        MahasiswaPeriodeSemester::create($data);
-        return redirect()
-            ->route('mahasiswa-periode-semester.index')
-            ->with('success', 'Data Status Mahasisaw berhasil ditambahkan');
+       //
     }
 
     /**
@@ -58,8 +39,7 @@ class MahasiswaPeriodeSemesterController extends Controller
      */
     public function show(MahasiswaPeriodeSemester $mahasiswaPeriodeSemester)
     {
-        $mahasiswaPeriodeSemester->load('mahasiswa', 'periodeSemester');
-        return view('mahasiswaPeriodeSemester.show', compact('mahasiswaPeriodeSemester'));
+        //
     }
 
     /**

@@ -5,7 +5,7 @@ $isEdit = $mode === 'edit';
 @endphp
 
 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
-    <div class="grip grid-cols-2 px-5 py-4 sm:px-6 sm:py-5">
+    <div class="justify-between flex items-center px-5 py-4 sm:px-6 sm:py-5">
         <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
             {{ $mode === 'create' ? 'Tambah Template Surat' : ($mode === 'edit' ? 'Edit Template Surat' : 'Detail Template Surat') }}
         </h3>
@@ -77,13 +77,11 @@ $isEdit = $mode === 'edit';
   tinymce.init({
     selector: '#editor',
     plugins: [
-      // Core editing features
-      'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-      // Your account includes a free trial of TinyMCE premium features
+      'anchor', 'autolink', 'charmap', 'code', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
       // Try the most popular premium features until Apr 19, 2026:
       'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
     ],
-    toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | code',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     mergetags_list: [

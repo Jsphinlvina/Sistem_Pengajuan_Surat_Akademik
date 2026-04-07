@@ -2,15 +2,6 @@
 <html>
 <head>
 
-<style>
-
-body{
-font-family: "Times New Roman";
-font-size:12px;
-}
-
-</style>
-
 </head>
 
 <body>
