@@ -5,8 +5,9 @@ namespace App\Models;
 use App\Concerns\BelongToProgramStudi;
 use App\Concerns\SmartDelete;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Mahasiswa extends Model
+class Mahasiswa extends Authenticatable
 {
     use SmartDelete;
     use BelongToProgramStudi;

@@ -4,7 +4,7 @@ $mode = $mode ?? 'create';
 $isEdit = $mode === 'edit';
 @endphp
 
-<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white mb-6">
     <div class="justify-between flex items-center px-5 py-4 sm:px-6 sm:py-5">
         <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
             {{ $mode === 'create' ? 'Tambah Template Surat' : ($mode === 'edit' ? 'Edit Template Surat' : 'Detail Template Surat') }}
@@ -16,7 +16,85 @@ $isEdit = $mode === 'edit';
             </a>
         @endif
     </div>
-
+     <div class="text-sm font-medium text-gray-700 space-y-6 border-t border-gray-100 p-5 sm:p-6 dark:border-gray-800 px-10">
+         <p >Keterangan dynamic field</p>
+         <div class="grid grid-cols-3">
+             <div class="flex gap-4">
+                 <div>
+                     <p>Kode Surat</p>
+                     <p>Nama Kepala Program Studi</p>
+                     <p>NIK Kepala Program Studi</p>
+                     <p></p>
+                     <p>Nama Mahasiswa</p>
+                     <p>NRP Mahasiswa</p>
+                     <p>Tanggal Lulus</p>
+                 </div>
+                 <div>
+                     <p>:</p>
+                     <p>:</p>
+                     <p>:</p>
+                     <p></p>
+                     <p>:</p>
+                     <p>:</p>
+                     <p>:</p>
+                 </div>
+                 <div>
+                     <p>kode_surat</p>
+                     <p>nama_kaprodi</p>
+                     <p>nik_kaprodi</p>
+                     <p></p>
+                     <p>nama_mahasiswa</p>
+                     <p>nrp_mahasiswa</p>
+                     <p>tanggal_lulus</p>
+                 </div>
+             </div>
+             <div class="flex gap-4">
+                 <div>
+                     <p>Alamat Mahasiswa</p>
+                     <p>Periode Semester</p>
+                     <p>Keperluan Surat</p>
+                     <p></p>
+                     <p>Nama Mata Kuliah</p>
+                     <p>Kode Mata Kuliah</p>
+                     <p>Nama yang Dituju</p>
+                 </div>
+                 <div>
+                     <p>:</p>
+                     <p>:</p>
+                     <p>:</p>
+                     <p></p>
+                     <p>:</p>
+                     <p>:</p>
+                     <p>:</p>
+                 </div>
+                 <div>
+                     <p>alamat_mahasiswa</p>
+                     <p>periode_semester</p>
+                     <p>keperluan_surat</p>
+                     <p></p>
+                     <p>nama_mata_kuliah</p>
+                     <p>kode_mata_kuliah</p>
+                     <p>nama_dituju</p>
+                 </div>
+             </div>
+             <div class="flex gap-4">
+                 <div>
+                     <p>Jabatan yang dituju</p>
+                     <p>Topik Tugas</p>
+                 </div>
+                 <div>
+                     <p>:</p>
+                     <p>:</p>
+                 </div>
+                 <div>
+                     <p>jabatan_dituju</p>
+                     <p>topik_tugas</p>
+                 </div>
+             </div>
+         </div>
+     </div>
+</div>
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white">
     <div class="space-y-6 border-t border-gray-100 p-5 sm:p-6 dark:border-gray-800 px-10">
 
         <form action="{{
@@ -70,7 +148,7 @@ $isEdit = $mode === 'edit';
 </div>
 
 <!-- Place the first <script> tag in your HTML's <head> -->
-<script src="https://cdn.tiny.cloud/1/h7kk3imczcm3ndiv45v8j7gwzex8xxpwr1rf2vko7hi4fpgn/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+<script src="{{ asset('https://cdn.tiny.cloud/1/h7kk3imczcm3ndiv45v8j7gwzex8xxpwr1rf2vko7hi4fpgn/tinymce/8/tinymce.min.js')}}" referrerpolicy="origin" crossorigin="anonymous"></script>
 
 <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
 <script>

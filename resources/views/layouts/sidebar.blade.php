@@ -47,7 +47,6 @@ $isTemplateSurat = request()->route('template-surat.index');
           </li>
           <!-- Menu Item Dashboard -->
 
-          <!-- Menu Item Profile -->
           @auth
           @if(auth()->user()->role === 0)
           <li>
