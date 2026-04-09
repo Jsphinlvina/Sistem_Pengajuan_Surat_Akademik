@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AdminLoginRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Mahasiswa;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+   public function store(LoginRequest $request): RedirectResponse
     {
         $request->validated();
 
@@ -34,7 +35,38 @@ class AuthenticatedSessionController extends Controller
             'password' => $request->password,
         ]);
 
+        if (!$response->successful()) {
+            return back()->withErrors([
+                'username' => 'Username atau password salah',
+            ])->onlyInput('username');
+        }
 
+        $data = $response->json();
+
+        $mahasiswa = Mahasiswa::where('nrp', $data['user']['username'])->first();
+
+        if (!$mahasiswa) {
+            return back()->withErrors([
+                'username' => 'User tidak ditemukan di sistem',
+            ]);
+        }
+
+        Auth::guard('mahasiswa')->login($mahasiswa);
+        $request->session()->regenerate();
+
+        session(['token' => $data['token']]);
+
+        return redirect()->route('mahasiswa.dashboard');
+    }
+
+    public function loginStaff(LoginRequest $request): RedirectResponse
+    {
+        $request->validated();
+
+        $response = Http::post('http://127.0.0.1:8001/api/login', [
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);
 
         if ($response->successful()) {
             $data = $response->json();
@@ -51,7 +83,7 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
             session(['token' => $data['token']]);
 
-            return redirect()->route('dashboard');
+            return redirect()->route('staff.dashboard');
         }
 
         if ($response->failed()) {
@@ -70,7 +102,7 @@ class AuthenticatedSessionController extends Controller
       $request->authenticate();
       $request->session()->regenerate();
 
-      return redirect()->intended(route('dashboard'));
+      return redirect()->intended(route('admin.dashboard'));
     }
 
     /**
@@ -78,7 +110,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::logout();
+        if (Auth::guard('mahasiswa')->check()) {
+            Auth::guard('mahasiswa')->logout();
+        }
+
+        if (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+        }
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

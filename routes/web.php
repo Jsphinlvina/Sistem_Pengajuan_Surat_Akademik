@@ -11,6 +11,7 @@ use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StaffDashboardController;
+use App\Http\Controllers\MahasiswaDashboardController;
 use App\Http\Controllers\PeriodeSemesterController;
 use App\Http\Controllers\MahasiswaPeriodeSemesterController;
 use App\Http\Controllers\TemplateSuratController;
@@ -19,8 +20,12 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('login-admin', function (){
+Route::get('admin', function (){
     return view('auth.login-admin');
+});
+
+Route::get('staff', function (){
+    return view('auth.login-staff');
 });
 
 Route::middleware('auth')->group(function () {
@@ -28,9 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-// Dashboard
-Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index'] )->name('dashboard');
 
 // Admin
 Route::middleware(['auth', 'role:0'])->group(function () {
@@ -100,6 +102,10 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::resource('template-surat', TemplateSuratController::class);
     Route::get('/template-surat/{templateSurat}/preview', [TemplateSuratController::class, 'preview'])->name('template-surat.preview');
     Route::patch('/template-surat/{templateSurat}/status',[TemplateSuratController::class, 'updateStatus'])->name('template-surat.status');
+});
+
+Route::middleware(['auth:mahasiswa'])->group(function () {
+   Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
 });
 
 

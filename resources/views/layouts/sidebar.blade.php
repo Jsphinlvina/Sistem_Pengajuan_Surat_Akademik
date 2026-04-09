@@ -1,5 +1,5 @@
 @php
-$isDashboardActive = request()->routeIs('dashboard');
+$isDashboardActive = request()->routeIs(['staff.dashboard', 'admin.dashboard',  'mahasiswa.dashboard']);
 $isUserActive = request()->routeIs('user.index');
 $isProgramStudiActive = request()->routeIs('program-studi.index');
 $isKurikulumActive = request()->routeIs('kurikulum.index');
@@ -7,6 +7,12 @@ $isPeriodeActive = request()->routeIs('periode-semester.index');
 $isMahasiswaActive = request()->routeIs('mahasiswa.index');
 $isDosenActive = request()->routeIs('dosen.index');
 $isTemplateSurat = request()->route('template-surat.index');
+
+$dashboardRoute = match(auth()->user()->role) {
+    0 => 'admin.dashboard',
+    1 => 'staff.dashboard',
+    default => 'mahasiswa.dashboard',
+};
 @endphp
 
 <aside :class="sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'"
@@ -15,7 +21,7 @@ $isTemplateSurat = request()->route('template-surat.index');
   <!-- SIDEBAR HEADER -->
   <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
     class="sidebar-header flex items-center gap-2 pb-7 pt-8">
-    <a href="{{ route('dashboard') }}">
+    <a href="{{ route($dashboardRoute) }}">
       <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
         <img src="{{asset('./image/logo.webp')}}" alt="Logo" />
       </span>
@@ -31,7 +37,7 @@ $isTemplateSurat = request()->route('template-surat.index');
         <ul class="mb-6 flex flex-col gap-4">
           <!-- Menu Item Calendar -->
           <li>
-            <a href="{{ route('dashboard') }}"
+            <a href="{{ route($dashboardRoute) }}"
               class="menu-item group {{ $isDashboardActive ? 'menu-item-active' : 'menu-item-inactive' }}">
               <svg class="{{ $isDashboardActive ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}" width="24"
                 height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

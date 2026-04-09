@@ -86,6 +86,6 @@ class ProgramStudiController extends Controller
         $programStudi->status = $request->status;
         $programStudi->save();
 
-        return back();
+        return back()->with('success', 'Status Berhasil Diupdate');
     }
 }

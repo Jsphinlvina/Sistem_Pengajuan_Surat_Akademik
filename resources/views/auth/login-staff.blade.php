@@ -6,20 +6,20 @@
     <div>
       <div class="mb-5 sm:mb-8">
         <h1 class="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-          Login
+          Selamat Datang Staff
         </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Masukkan NRP dan Password untuk Login!
+          Masukkan NIK dan Password untuk Login!
         </p>
       </div>
       <div>
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login-staff') }}">
           @csrf
           <div class="space-y-5">
             <!-- Kode User -->
             <div>
               <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                NRP User<span class="text-error-500">*</span>
+                NIK User<span class="text-error-500">*</span>
               </label>
               <input type="text" id="username" name="username" placeholder="2272001"
                 class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
