@@ -28,6 +28,10 @@ Route::get('staff', function (){
     return view('auth.login-staff');
 });
 
+Route::middleware(['web', 'auth:mahasiswa'])->group(function () {
+   Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -104,9 +108,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::patch('/template-surat/{templateSurat}/status',[TemplateSuratController::class, 'updateStatus'])->name('template-surat.status');
 });
 
-Route::middleware(['auth:mahasiswa'])->group(function () {
-   Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
-});
+
 
 
 require __DIR__.'/auth.php';

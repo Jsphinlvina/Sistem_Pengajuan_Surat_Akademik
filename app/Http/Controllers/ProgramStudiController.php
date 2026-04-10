@@ -84,8 +84,11 @@ class ProgramStudiController extends Controller
     public function updateStatus(Request $request, ProgramStudi $programStudi)
     {
         $programStudi->status = $request->status;
-        $programStudi->save();
+        $updated = $programStudi->save();
 
-        return back()->with('success', 'Status Berhasil Diupdate');
+        return redirect()->route('program-studi.index')->with(
+            $updated ? 'success' : 'error',
+            $updated ? 'Program Studi berhasil diperbaharui' : 'Program Studi gagal diperbaharui'
+        );
     }
 }

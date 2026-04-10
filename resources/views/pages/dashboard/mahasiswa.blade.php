@@ -1,5 +1,5 @@
 @extends('starter')
-@section('title', 'Dashboard Staff')
+@section('title', 'Dashboard Mahasiswa')
 @section('content')
 
 @endsection

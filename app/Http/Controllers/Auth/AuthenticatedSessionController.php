@@ -52,6 +52,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         Auth::guard('mahasiswa')->login($mahasiswa);
+
         $request->session()->regenerate();
 
         session(['token' => $data['token']]);

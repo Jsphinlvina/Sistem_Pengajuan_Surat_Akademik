@@ -109,8 +109,11 @@ class UserController extends Controller
     public function updateStatus(Request $request, User $user)
     {
         $user->status = $request->status;
-        $user->save();
+        $updated = $user->save();
 
-        return back();
+        return redirect()->route('user.index')->with(
+            $updated ? 'success' : 'error',
+            $updated ? 'Status user berhasil diperbaharui' : 'Status user gagal diperbaharui'
+        );
     }
 }
