@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TemplateSurat;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Blade;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -18,45 +19,12 @@ class TemplateSuratController extends Controller
 
     private function extractDynamicFields($content)
     {
-        preg_match_all('/{{\s*([a-zA-Z0-9_]+)\s*}}/', $content, $matches);
+        preg_match_all('/{{\s*\$([a-zA-Z0-9_]+)\s*}}/', $content, $matches);
 
         return collect($matches[1])
             ->unique()
             ->values()
             ->toArray();
-    }
-
-    private function renderTemplate($content, $data)
-    {
-        if (isset($data['mahasiswa'])) {
-            $pattern = '/{{#mahasiswa}}(.*?){{\/mahasiswa}}/s';
-
-            $content = preg_replace_callback($pattern, function ($matches) use ($data) {
-
-                $rowTemplate = $matches[1];
-                $result = '';
-
-                foreach ($data['mahasiswa'] as $index => $mhs) {
-                    $row = $rowTemplate;
-                    foreach ($mhs as $key => $value) {
-                        $row = str_replace('{{'.$key.'}}', $value, $row);
-                    }
-
-                    $row = str_replace('{{no}}', $index + 1, $row);
-                    $result .= $row;
-                }
-                return $result;
-            }, $content);
-        }
-
-        foreach ($data as $key => $value) {
-
-            if (!is_array($value)) {
-                $content = str_replace('{{'.$key.'}}', $value, $content);
-            }
-
-        }
-        return $content;
     }
 
     /**
@@ -83,9 +51,9 @@ class TemplateSuratController extends Controller
     {
         $data = $request->validate([
             'nama' => 'required|unique:template_surats|max:255',
-            'kode'=> 'required|unique:template_surats|max:50',
+            'kode' => 'required|unique:template_surats|max:50',
             'deskripsi' => 'required|string|max:255',
-            'xml_content'=> 'required',
+            'xml_content' => 'required',
         ]);
 
         $data['status'] = 1;
@@ -117,12 +85,12 @@ class TemplateSuratController extends Controller
             'nik_kaprodi' => '1987654321',
 
             'mahasiswa' => [
-                [
+                (object)[
                     'no' => 1,
                     'nama' => 'Budi Santoso',
                     'nrp' => '2272001'
                 ],
-                [
+                (object)[
                     'no' => 2,
                     'nama' => 'Andi Wijaya',
                     'nrp' => '2272002'
@@ -148,11 +116,8 @@ class TemplateSuratController extends Controller
             'tanggal_surat' => now()->format('d F Y'),
         ];
 
-        $content = $this->renderTemplate($templateSurat->xml_content, $data);
-
-        $pdf = Pdf::loadView('pdf.template-surat', [
-            'content' => $content
-        ]);
+        $html = Blade::render(html_entity_decode($templateSurat->xml_content, ENT_QUOTES | ENT_HTML5),$data);
+        $pdf = Pdf::loadView('pdf.template-surat', ['content' => $html]);
 
         return $pdf->stream('preview-surat.pdf');
     }
@@ -171,14 +136,14 @@ class TemplateSuratController extends Controller
     public function update(Request $request, TemplateSurat $templateSurat)
     {
         $data = $request->validate([
-           'nama' => 'required|max:255|unique:template_surats,nama,' . $templateSurat->id,
-           'kode'=> 'required|max:50|unique:template_surats,kode,' . $templateSurat->id,
-           'deskripsi' => 'required|string|max:255',
-           'xml_content'=> 'required',
+            'nama' => 'required|max:255|unique:template_surats,nama,' . $templateSurat->id,
+            'kode' => 'required|max:50|unique:template_surats,kode,' . $templateSurat->id,
+            'deskripsi' => 'required|string|max:255',
+            'xml_content' => 'required',
         ]);
 
         $data['kode'] = strtoupper($data['kode']);
-        $data['dynamic_fields'] =  $this->extractDynamicFields($data['xml_content']);
+        $data['dynamic_fields'] = $this->extractDynamicFields($data['xml_content']);
 
         $templateSurat->update($data);
         return redirect()
@@ -186,8 +151,8 @@ class TemplateSuratController extends Controller
             ->with('success', 'Data Template Surat Berhasil Diubah');
     }
 
-     public function updateStatus(Request $request, TemplateSurat $templateSurat)
-     {
+    public function updateStatus(Request $request, TemplateSurat $templateSurat)
+    {
         $this->authorize('update', $templateSurat);
 
         $request->validate([

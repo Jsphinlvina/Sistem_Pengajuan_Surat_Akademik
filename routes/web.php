@@ -8,7 +8,7 @@ use App\Http\Controllers\ProgramStudiController;
 use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KurikulumController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\MahasiswaDashboardController;
@@ -28,8 +28,11 @@ Route::get('staff', function (){
     return view('auth.login-staff');
 });
 
+// Mahasiswa
 Route::middleware(['web', 'auth:mahasiswa'])->group(function () {
    Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
+   Route::resource('pengajuan', PengajuanController::class);
+   Route::post('/pengajuan/template', [PengajuanController::class, 'redirectHalamanPengajuan'])->name('pengajuan.redirect');
 });
 
 Route::middleware('auth')->group(function () {
@@ -106,6 +109,7 @@ Route::middleware(['auth', 'role:1'])->group(function () {
     Route::resource('template-surat', TemplateSuratController::class);
     Route::get('/template-surat/{templateSurat}/preview', [TemplateSuratController::class, 'preview'])->name('template-surat.preview');
     Route::patch('/template-surat/{templateSurat}/status',[TemplateSuratController::class, 'updateStatus'])->name('template-surat.status');
+    Route::get('/template-surat/{templateSurat}/download', [TemplateSuratController::class, 'download'])->name('template-surat.download');
 });
 
 

@@ -51,6 +51,7 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        Auth::guard('web')->logout();
         Auth::guard('mahasiswa')->login($mahasiswa);
 
         $request->session()->regenerate();
