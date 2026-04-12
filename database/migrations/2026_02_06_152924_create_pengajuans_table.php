@@ -48,6 +48,8 @@ return new class extends Migration
               ->on('users')
               ->nullOnDelete();
 
+        $table->json('data_pengajuan')->nullable();
+
         $table->timestamps();
     });
     }

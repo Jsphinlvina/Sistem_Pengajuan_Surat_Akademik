@@ -15,8 +15,20 @@ class PengajuanController extends Controller
      */
     public function index()
     {
-        $pengajuans = Pengajuan::with('periodeSemester', 'mahasiswa', 'templateSurat', 'user')->get();
-        return view('pengajuan.index', compact('pengajuans'));
+        $templateSurats = TemplateSurat::all();
+        return view('pages.pengajuan.index', compact('templateSurats'));
+    }
+
+    public function redirectHalamanPengajuan(Request $request){
+        $request->validate([
+            'template_surat_id' => 'required|exists:template_surats,id',
+        ]);
+
+        $template = TemplateSurat::findOrFail($request->template_surat_id);
+        $dynamicFields = $template->dynamicFields;
+
+        return view('pages.pengajuan.form-surat', compact('template', 'dynamicFields'));
+
     }
 
     /**
