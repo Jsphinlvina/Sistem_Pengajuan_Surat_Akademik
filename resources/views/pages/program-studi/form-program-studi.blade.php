@@ -18,7 +18,7 @@ $isEdit = $mode === 'edit';
                 $mode === 'create'
                     ? route('program-studi.store')
                     : ($mode === 'edit' ? route('program-studi.update', $programStudis) : '#')
-            }}" method="POST">
+            }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if($isEdit)
             @method('PUT')
@@ -32,6 +32,9 @@ $isEdit = $mode === 'edit';
                 <x-form-input name="nama" label="Nama Program Studi" :value="$programStudis?->nama"
                     placeholder="Teknik Informatika" />
             </div>
+            </div>
+            <div>
+                <x-form-upload name="kop_surat" label="Upload Kop Surat" accept=".jpg,.jpeg,.png" />
             </div>
             <div class="mt-10">
                 @if($mode === 'create')
@@ -47,7 +50,18 @@ $isEdit = $mode === 'edit';
                 </button>
                 @endif
             </div>
-
         </form>
     </div>
 </div>
+@if($isEdit)
+<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 mt-6">
+    <div class="px-5 py-4 sm:px-6 sm:py-5">
+        <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
+            Kop Surat
+        </h3>
+    </div>
+    <div class="space-y-6 border-t border-gray-100 p-5 sm:p-6 dark:border-gray-800 px-10">
+         <img src="{{ asset('storage/' . $programStudi->kop_surat) }}" alt="Kop Surat">
+    </div>
+</div>
+@endif

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('kode')->unique();
             $table->string('nama')->unique();
             $table->boolean('status')->default(true);
+            $table->string('kop_surat')->nullable();
             $table->timestamps();
         });
     }

@@ -84,7 +84,7 @@ $isEdit = $mode === 'edit';
         <form action="{{ route('kurikulum.mata-kuliah.import', $kurikulum) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
-                <x-form-upload name="file" label="Upload File Excel" />
+            <x-form-upload name="file" label="Upload File Excel" accept=".xlsx,.xls,.csv" />
             <div class="mb-4">
                 <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">
                     Import Mata Kuliah

@@ -42,7 +42,7 @@ $isEdit = $mode === 'edit';
             <div class="grid grid-cols-2 gap-6 mb-6">
                 <div>
                    <x-form-select name="dosen_id" label="Nama Kepala Program Studi" :disabled="$isShow"
-                        :value="$periodeSemester?->status ?? '-' " :options="$dosens" />
+                        :value="$periodeSemester?->dosen_id ?? '-' " :options="$dosens" />
                 </div>
             </div>
 
@@ -92,7 +92,7 @@ $isEdit = $mode === 'edit';
             enctype="multipart/form-data">
             @csrf
             <div class="mb-4">
-                <x-form-upload name="file" label="Upload File Excel" />
+                <x-form-upload name="file" label="Upload File Excel" accept=".xlsx,.xls,.csv" />
                 <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg">
                     Import Data Status Mahasiswa
                 </button>

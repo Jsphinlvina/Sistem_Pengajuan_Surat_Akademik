@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProgramStudi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramStudiController extends Controller
 {
@@ -32,7 +33,14 @@ class ProgramStudiController extends Controller
         $data = $request->validate([
             'kode' => 'required|unique:program_studis',
             'nama' => 'required|unique:program_studis',
+            'kop_surat' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+
         ]);
+
+        if ($request->hasFile('kop_surat')) {
+                $path = $request->file('kop_surat')->store('kop_surat', 'public');
+                $data['kop_surat'] = $path;
+        }
 
         ProgramStudi::create($data);
         return redirect()->route('program-studi.index')->with('success', 'Data Program Studi Berhahsil Ditambahkan');
@@ -60,12 +68,23 @@ class ProgramStudiController extends Controller
     public function update(Request $request, ProgramStudi $programStudi)
     {
         $data = $request->validate([
-           'kode' => 'required|unique:program_studis,kode,' . $programStudi->id,
-           'nama' => 'required|unique:program_studis,nama,' . $programStudi->id
+            'kode' => 'required|unique:program_studis,kode,' . $programStudi->id,
+            'nama' => 'required|unique:program_studis,nama,' . $programStudi->id,
+            'kop_surat' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        if ($request->hasFile('kop_surat')) {
+            if ($programStudi->kop_surat) {
+                Storage::disk('public')->delete($programStudi->kop_surat);
+            }
+            $path = $request->file('kop_surat')->store('kop_surat', 'public');
+            $data['kop_surat'] = $path;
+        }
+
         $programStudi->update($data);
-        return redirect()->route('program-studi.index')->with('success', 'Data Program Studi Berhasil Diupdate');
+
+        return redirect()->route('program-studi.index')
+            ->with('success', 'Data Program Studi Berhasil Diupdate');
     }
 
     /**

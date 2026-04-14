@@ -10,7 +10,7 @@ class ProgramStudi extends Model
     use SmartDelete;
 
     protected $fillable =[
-        'kode', 'nama','status'
+        'kode', 'nama','status','kop_surat'
     ];
 
     public function kurikulum(){
