@@ -4,7 +4,9 @@
 @section('content')
     @include('pages.pengajuan.form-pengajuan', [
         'mode' => 'create',
-        'mahasiswa' => $mahasiswa,
-        'optionSelect' => false
+        'optionSelect' => false,
+        'template' => $template,
+        'formFields' => $formFields,
+        'showFields' => $showFields,
     ])
 @endsection

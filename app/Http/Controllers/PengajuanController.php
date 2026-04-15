@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mahasiswa;
 use App\Models\Pengajuan;
 use App\Models\PeriodeSemester;
 use App\Models\TemplateSurat;
@@ -11,85 +10,127 @@ use Illuminate\Http\Request;
 class PengajuanController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Halaman pilih template surat
      */
     public function index()
     {
-        $templateSurats = TemplateSurat::all();
+        $templateSurats = TemplateSurat::where('status',1)->get();
+
         return view('pages.pengajuan.index', compact('templateSurats'));
     }
 
-    public function redirectHalamanPengajuan(Request $request){
+    /**
+     * Redirect ke form pengajuan berdasarkan template
+     */
+   public function redirectHalamanPengajuan(Request $request)
+    {
         $request->validate([
             'template_surat_id' => 'required|exists:template_surats,id',
         ]);
 
         $template = TemplateSurat::findOrFail($request->template_surat_id);
-        $dynamicFields = $template->dynamicFields;
 
-        return view('pages.pengajuan.form-surat', compact('template', 'dynamicFields'));
+        $dynamicFields = $template->dynamic_fields ?? [];
 
+        $user = auth()->user();
+
+        $showFields = [
+            'nama_mahasiswa' => $user->nama,
+            'email_mahasiswa' => $user->email,
+            'nrp_mahasiswa' => $user->nrp,
+            'alamat_mahasiswa' => $user->alamat,
+        ];
+
+        $systemFieldKeys = [
+            'nama_kaprodi',
+            'nik_kaprodi',
+            'periode_semester',
+            'kode_surat',
+            'tanggal_surat',
+            'prodi_mahasiswa',
+            'tanggal_lulus'
+        ];
+
+        $showFieldKeys = array_keys($showFields);
+
+        $excludeFields = array_merge($showFieldKeys, $systemFieldKeys);
+
+        $formFields = array_values(
+            array_diff($dynamicFields, $excludeFields)
+        );
+
+        return view(
+            'pages.pengajuan.create',
+            compact(
+                'template',
+                'formFields',
+                'showFields'
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $periodeSemesters = PeriodeSemester::all();
-        $mahasiswas = Mahasiswa::with('programStudi')->get();
-        $templateSurats = TemplateSurat::all();
-
-        return view('pengajuan.create', compact('periodeSemesters', 'mahasiswas', 'templateSurats'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Simpan pengajuan
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'periode_semester_id' => 'required|exists:periode_semesters,id',
-            'mahasiswa_id' => 'required|exists:mahasiswas,id',
+        $request->validate([
             'template_surat_id' => 'required|exists:template_surats,id',
-            'status' => 'required|in:dalam_pengajuan',
+            'fields' => 'nullable|array'
         ]);
 
-        Pengajuan::create($data);
-        return redirect()->route('pengajuan.index')->with('success', 'Data Pengajuan Berhasil Dibuat');
+        $mahasiswa = auth()->user()->mahasiswa;
+
+        $periodeSemester = PeriodeSemester::where('status',1)->first();
+
+        Pengajuan::create([
+
+            'template_surat_id' => $request->template_surat_id,
+
+            'mahasiswa_id' => $mahasiswa->id,
+
+            'periode_semester_id' => $periodeSemester->id,
+
+            'status' => Pengajuan::status_dalam_pengajuan,
+
+            'user_id' => auth()->id(),
+
+            'data_pengajuan' => $request->fields
+
+        ]);
+
+        return redirect()
+            ->route('pengajuan.index')
+            ->with('success','Pengajuan surat berhasil dibuat');
     }
 
     /**
-     * Display the specified resource.
+     * Detail pengajuan
      */
     public function show(Pengajuan $pengajuan)
     {
-        $pengajuan->load('periodeSemester', 'mahasiswa', 'templateSurat', 'user');
-        return view('pengajuan.show', compact('pengajuan'));
+        $pengajuan->load(
+            'mahasiswa',
+            'templateSurat',
+            'periodeSemester',
+            'user'
+        );
+
+        return view(
+            'pages.pengajuan.show',
+            compact('pengajuan')
+        );
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pengajuan $pengajuan)
-    {
-        return view('pengajuan.edit', compact('pengajuan'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
+     * Hapus pengajuan
      */
     public function destroy(Pengajuan $pengajuan)
     {
         $pengajuan->delete();
-        return redirect()->route('pengajuan.index')->with('success', 'Data Pengajuan Berhasil Dihapus');
+
+        return redirect()
+            ->route('pengajuan.index')
+            ->with('success','Pengajuan berhasil dihapus');
     }
 }
