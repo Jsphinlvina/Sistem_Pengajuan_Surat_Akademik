@@ -30,4 +30,8 @@ class PeriodeSemester extends Model
     public function dosen(){
         return $this->belongsTo(Dosen::class);
     }
+
+    public function programStudi(){
+        return $this->belongsTo(ProgramStudi::class);
+    }
 }

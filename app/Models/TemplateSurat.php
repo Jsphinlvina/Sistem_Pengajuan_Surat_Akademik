@@ -22,4 +22,8 @@ class TemplateSurat extends Model
     public function pengajuan(){
         return $this->hasMany(Pengajuan::class);
     }
+
+    public function programStudi(){
+        return $this->belongsTo(ProgramStudi::class);
+    }
 }

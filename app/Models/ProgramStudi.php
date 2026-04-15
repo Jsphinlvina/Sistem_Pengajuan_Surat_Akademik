@@ -24,4 +24,16 @@ class ProgramStudi extends Model
     public function mahasiswa(){
         return $this->hasMany(Mahasiswa::class);
     }
+
+    public function dosen(){
+        return $this->hasMany(Dosen::class);
+    }
+
+    public function periodeSemester(){
+        return $this->hasMany(PeriodeSemester::class);
+    }
+
+    public function templateSurat(){
+        return $this->hasMany(TemplateSurat::class);
+    }
 }

@@ -23,7 +23,9 @@ th, td{
 
 <body>
 
-<img src="{{ public_path('image/kop_surat.jpeg') }}" style="width:100%;">
+@if($kop_surat_path && file_exists($kop_surat_path))
+    <img src="{{ $kop_surat_path }}" style="width:100%;">
+@endif
 
 <br><br>
 

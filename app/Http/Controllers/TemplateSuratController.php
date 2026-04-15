@@ -79,6 +79,14 @@ class TemplateSuratController extends Controller
     {
         $this->authorize('view', $templateSurat);
 
+        $programStudi = $templateSurat->programStudi;
+
+        $kopSuratPath = null;
+
+        if ($programStudi && $programStudi->kop_surat) {
+            $kopSuratPath = storage_path('storage/' . $programStudi->kop_surat);
+        }
+
         $data = [
             'kode_surat' => '123/SK/TI/2025',
             'nama_kaprodi' => 'Dr. Andi Wijaya',
@@ -97,27 +105,18 @@ class TemplateSuratController extends Controller
                 ]
             ],
 
-            'nama_mahasiswa' => 'Budi Santoso',
-            'nrp_mahasiswa' => '2272001',
-
-            'tanggal_lulus' => Carbon::parse('2024-12-25')->translatedFormat('d F Y'),
-
-            'periode_semester' => 'Ganjil 2025/2026',
-            'alamat_mahasiswa' => 'Jl. Merdeka No. 10 Bandung',
-            'keperluan_surat' => 'Pengajuan Beasiswa',
-
-            'nama_mata_kuliah' => 'Pemrograman Web',
-            'kode_mata_kuliah' => 'IF101',
-
-            'nama_dituju' => 'John Doe',
-            'jabatan_dituju' => 'CEO of The Company',
-            'topik_tugas' => 'Analisis Bisnis Operasional',
-
-            'tanggal_surat' => now()->format('d F Y'),
+            'tanggal_surat' => now()->translatedFormat('d F Y'),
         ];
 
-        $html = Blade::render(html_entity_decode($templateSurat->xml_content, ENT_QUOTES | ENT_HTML5),$data);
-        $pdf = Pdf::loadView('pdf.template-surat', ['content' => $html]);
+        $html = Blade::render(
+            html_entity_decode($templateSurat->xml_content, ENT_QUOTES | ENT_HTML5),
+            $data
+        );
+
+        $pdf = Pdf::loadView('pdf.template-surat', [
+            'content' => $html,
+            'kop_surat_path' => $kopSuratPath,
+        ]);
 
         return $pdf->stream('preview-surat.pdf');
     }
