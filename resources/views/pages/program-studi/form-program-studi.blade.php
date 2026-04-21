@@ -53,7 +53,7 @@ $isEdit = $mode === 'edit';
         </form>
     </div>
 </div>
-@if($isEdit)
+@if($isEdit && $programStudi->kop_surat)
 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3 mt-6">
     <div class="px-5 py-4 sm:px-6 sm:py-5">
         <h3 class="text-base font-medium text-gray-800 dark:text-white/90">

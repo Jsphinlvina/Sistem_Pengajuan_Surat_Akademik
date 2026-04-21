@@ -104,8 +104,13 @@ $isEdit = $mode === 'edit';
                     placeholder="John Doe" />
             </div>
             </div>
-            <div class="grid mt-6">
-                <x-form-input name="email" type="email" label="Email" :value="$mahasiswa?->email" placeholder="2272001@maranatha.ac.id" />
+            <div class="grid grid-cols-2 gap-6 mt-6">
+                <div>
+                    <x-form-input name="email" type="email" label="Email" :value="$mahasiswa?->email" placeholder="2272001@maranatha.ac.id" />
+                </div>
+                <div>
+                    <x-form-input name="tahun_lulus" type="date" label="Tahun Lulus" :value="$mahasiswa?->tahun_lulus" placeholder="" />
+                </div>
             </div>
             <div class="grid mt-6">
                 <x-form-input name="alamat" label="Alamat" :value="$mahasiswa?->alamat" placeholder="Jl. Surya Sumantri No. 65" />

@@ -24,7 +24,7 @@ class PeriodeSemester extends Model
     }
 
     public function scopeActive($query){
-        return $query->where('status', 'aktif');
+        return $query->where('status', 1);
     }
 
     public function dosen(){

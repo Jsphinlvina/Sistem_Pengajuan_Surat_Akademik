@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MahasiswaPeriodeSemester;
 use App\Models\Pengajuan;
 use App\Models\PeriodeSemester;
 use App\Models\TemplateSurat;
@@ -28,23 +29,37 @@ class PengajuanController extends Controller
             'template_surat_id' => 'required|exists:template_surats,id',
         ]);
 
+        $user = auth()->user();
+
+         $isAktif = MahasiswaPeriodeSemester::where('mahasiswa_id', $user->id)
+            ->where('status', 1)
+            ->whereHas('periodeSemester', fn ($q) => $q->active())
+            ->exists();
+
+
+        if (! $isAktif) {
+            return redirect()
+                ->back()
+                ->with('error', 'Anda tidak aktif pada periode semester saat ini.');
+        }
+
+        $periode_semester = PeriodeSemester::active()->firstOrFail();
+
         $template = TemplateSurat::findOrFail($request->template_surat_id);
 
         $dynamicFields = $template->dynamic_fields ?? [];
-
-        $user = auth()->user();
 
         $showFields = [
             'nama_mahasiswa' => $user->nama,
             'email_mahasiswa' => $user->email,
             'nrp_mahasiswa' => $user->nrp,
             'alamat_mahasiswa' => $user->alamat,
+            'periode_semester' => $periode_semester->nama
         ];
 
         $systemFieldKeys = [
             'nama_kaprodi',
             'nik_kaprodi',
-            'periode_semester',
             'kode_surat',
             'tanggal_surat',
             'prodi_mahasiswa',
@@ -52,7 +67,6 @@ class PengajuanController extends Controller
         ];
 
         $showFieldKeys = array_keys($showFields);
-
         $excludeFields = array_merge($showFieldKeys, $systemFieldKeys);
 
         $formFields = array_values(

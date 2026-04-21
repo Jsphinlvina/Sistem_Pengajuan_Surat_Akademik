@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('nrp')->unique();
             $table->string('alamat');
+            $table->date('tahun_lulus')->nullable();
 
             $table->unsignedSmallInteger('program_studi_id');
             $table->foreign('program_studi_id')

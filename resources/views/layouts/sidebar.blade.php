@@ -55,8 +55,8 @@ default => 'mahasiswa.dashboard',
           </li>
           <!-- Menu Item Dashboard -->
 
-
-          @if(Auth::guard('mahasiswa')->check() && !Auth::guard('web')->check())
+            @can('student')
+{{--          @if(Auth::guard('mahasiswa')->check() && !Auth::guard('web')->check())--}}
           <li>
             <a href="{{ route('pengajuan.index') }}"
               class="menu-item group {{ $isPengajuanActive ? 'menu-item-active' : 'menu-item-inactive' }}">
@@ -70,9 +70,11 @@ default => 'mahasiswa.dashboard',
               </span>
             </a>
           </li>
-          @endif
-          @auth()
-          @if(auth()->user()->role === 1)
+{{--          @endif--}}
+            @endcan()
+
+{{--          @if(auth()->user()->role === 1)--}}
+          @can('staff')
           <li>
             <a href="#" @click.prevent="selected = (selected === 'MahasiswaDosen' ? '':'MahasiswaDosen')"
               class="menu-item group"
@@ -203,7 +205,9 @@ default => 'mahasiswa.dashboard',
               </span>
             </a>
           </li>
-          @elseif(auth()->user()->role === 0)
+          @endcan
+{{--          @elseif(auth()->user()->role === 0)--}}
+            @can('admin')
           <li>
             <a href="{{ route('user.index') }}"
               class="menu-item group {{ $isUserActive ? 'menu-item-active' : 'menu-item-inactive' }}">
@@ -233,7 +237,6 @@ default => 'mahasiswa.dashboard',
             </a>
           </li>
           @endif
-          @endauth
           <!-- Menu Item Profile -->
         </ul>
       </div>

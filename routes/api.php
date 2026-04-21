@@ -39,6 +39,16 @@ Route::post('/login', function (Request $request) {
         ]);
     }
 
+    if ($username === '2272002' && $password === 'password') {
+        return response()->json([
+            'status' => 'success',
+            'token' => 'dummy_token_123456',
+            'user' => [
+                'username' => $username,
+            ]
+        ]);
+    }
+
     return response()->json([
         'status' => 'error',
         'message' => 'Unauthorized'

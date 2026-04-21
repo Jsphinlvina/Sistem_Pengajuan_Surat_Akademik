@@ -13,7 +13,7 @@ class Mahasiswa extends Authenticatable
     use BelongToProgramStudi;
 
     protected $fillable = [
-      'nama', 'email', 'nrp', 'alamat', 'program_studi_id'
+      'nama', 'email', 'nrp', 'alamat', 'tahun_lulus', 'program_studi_id'
     ];
 
     public function programStudi(){

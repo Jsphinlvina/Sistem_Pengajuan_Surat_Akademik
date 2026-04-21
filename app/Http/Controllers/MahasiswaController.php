@@ -124,6 +124,7 @@ class MahasiswaController extends Controller
             'email' => 'required|string|email|max:255|unique:mahasiswas,email,'. $mahasiswa->id,
             'nrp' => 'required|string|max:7|unique:mahasiswas,nrp,'. $mahasiswa->id,
             'alamat' => 'required|string|max:255',
+            'tahun_lulus' => 'nullable|date`'
         ]);
 
          $mahasiswa->update($data);
