@@ -72,6 +72,17 @@
   </div>
   <!-- ===== Page Wrapper End ===== -->
 <script defer src="{{ asset('https://cdn.jsdelivr.net/npm/alpinejs@3.15.8/dist/cdn.min.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            document.querySelectorAll('.tom-select').forEach(el => {
+                if (!el.tomselect) {
+                    new TomSelect(el);
+                }
+            });
+        }, 0);
+    });
+</script>
 </body>
 
 </html>

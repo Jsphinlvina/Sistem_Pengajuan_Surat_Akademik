@@ -58,17 +58,3 @@ $showFields = $showFields ?? [];
         </form>
     </div>
 </div>
-
-@if ($template->id == 2)
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(() => {
-            document.querySelectorAll('.tom-select').forEach(el => {
-                if (!el.tomselect) {
-                    new TomSelect(el);
-                }
-            });
-        }, 0);
-    });
-</script>
-@endif

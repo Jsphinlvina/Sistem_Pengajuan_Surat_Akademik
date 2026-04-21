@@ -51,15 +51,3 @@ $selectId = $attributes->get('id') ?? $name;
     @enderror
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    new TomSelect("#{{ $selectId }}",{
-        create:false,
-        placeholder:"Pilih {$label}",
-        sortField:{
-            field:"text",
-            direction:"asc"
-        }
-    });
-});
-</script>
