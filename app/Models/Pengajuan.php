@@ -10,13 +10,44 @@ class Pengajuan extends Model
 {
     use SmartDelete;
 
-    const status_dalam_pengajuan = 0;
-    const status_dalam_proses = 1;
+    const status_dalam_pengajuan = 1;
     const status_disetujui = 2;
     const status_ditolak = 3;
 
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            self::status_dalam_pengajuan => 'Dalam Pengajuan',
+            self::status_disetujui       => 'Disetujui',
+            self::status_ditolak         => 'Ditolak',
+            default                      => 'Dalam Pengajuan',
+        };
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match ($this->status) {
+            self::status_dalam_pengajuan => 'bg-yellow-600',
+            self::status_disetujui       => 'bg-green-600',
+            self::status_ditolak         => 'bg-red-600',
+            default                      => 'bg-gray-500',
+        };
+    }
+
     protected $fillable =[
-      'periode_semester_id', 'mahasiswa_id', 'template_surat_id', 'status', 'catatan', 'file_surat', 'user_id', 'mata_kuliah_id'
+        'periode_semester_id',
+        'mahasiswa_id',
+        'template_surat_id',
+        'status',
+        'catatan',
+        'file_surat',
+        'user_id',
+        'mata_kuliah_id',
+        'data_pengajuan'
+    ];
+
+    protected $casts = [
+        'data_pengajuan' => 'array',
     ];
 
     public function periodeSemester(){

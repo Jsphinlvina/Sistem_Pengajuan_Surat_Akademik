@@ -8,6 +8,7 @@ $isMahasiswaActive = request()->routeIs('mahasiswa.index');
 $isDosenActive = request()->routeIs('dosen.index');
 $isPengajuanActive = request()->routeIs('pengajuan.index');
 $isTemplateSurat = request()->route('template-surat.index');
+$isPengajuanHistoryActive = request()->route('pengajuan.history');
 $isMahasiswaDosenActive = $isMahasiswaActive || $isDosenActive;
 $isPeriodeKurikulumActive = $isPeriodeActive || $isKurikulumActive;
 
@@ -53,10 +54,8 @@ default => 'mahasiswa.dashboard',
               </span>
             </a>
           </li>
-          <!-- Menu Item Dashboard -->
 
-            @can('student')
-{{--          @if(Auth::guard('mahasiswa')->check() && !Auth::guard('web')->check())--}}
+          @can('student')
           <li>
             <a href="{{ route('pengajuan.index') }}"
               class="menu-item group {{ $isPengajuanActive ? 'menu-item-active' : 'menu-item-inactive' }}">
@@ -70,10 +69,21 @@ default => 'mahasiswa.dashboard',
               </span>
             </a>
           </li>
-{{--          @endif--}}
-            @endcan()
+          <li>
+            <a href="{{ route('pengajuan.history') }}"
+              class="menu-item group {{ $isPengajuanHistoryActive ? 'menu-item-active' : 'menu-item-inactive' }}">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+              </svg>
+              <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                Riwayat Pengajuan
+              </span>
+            </a>
+          </li>
+          @endcan()
 
-{{--          @if(auth()->user()->role === 1)--}}
           @can('staff')
           <li>
             <a href="#" @click.prevent="selected = (selected === 'MahasiswaDosen' ? '':'MahasiswaDosen')"
@@ -99,7 +109,6 @@ default => 'mahasiswa.dashboard',
               </svg>
             </a>
 
-            <!-- Dropdown Menu Start -->
             <div class="translate transform overflow-hidden"
               :class="(selected === 'MahasiswaDosen') ? 'block' :'hidden'">
               <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'" class="menu-dropdown mt-2 flex flex-col gap-1 pl-9">
@@ -131,7 +140,6 @@ default => 'mahasiswa.dashboard',
                 </li>
               </ul>
             </div>
-            <!-- Dropdown Menu End -->
           </li>
           <li>
             <a href="#" @click.prevent="selected = (selected === 'PeriodeKurikulum' ? '':'PeriodeKurikulum')"
@@ -158,7 +166,6 @@ default => 'mahasiswa.dashboard',
               </svg>
             </a>
 
-            <!-- Dropdown Menu Start -->
             <div class="translate transform overflow-hidden"
               :class="(selected === 'PeriodeKurikulum') ? 'block' :'hidden'">
               <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'" class="menu-dropdown mt-2 flex flex-col gap-1 pl-9">
@@ -190,7 +197,6 @@ default => 'mahasiswa.dashboard',
                 </li>
               </ul>
             </div>
-            <!-- Dropdown Menu End -->
           </li>
           <li>
             <a href="{{ route('template-surat.index') }}"
@@ -206,8 +212,7 @@ default => 'mahasiswa.dashboard',
             </a>
           </li>
           @endcan
-{{--          @elseif(auth()->user()->role === 0)--}}
-            @can('admin')
+          @can('admin')
           <li>
             <a href="{{ route('user.index') }}"
               class="menu-item group {{ $isUserActive ? 'menu-item-active' : 'menu-item-inactive' }}">
@@ -237,10 +242,8 @@ default => 'mahasiswa.dashboard',
             </a>
           </li>
           @endif
-          <!-- Menu Item Profile -->
         </ul>
       </div>
     </nav>
-    <!-- Sidebar Menu -->
   </div>
 </aside>

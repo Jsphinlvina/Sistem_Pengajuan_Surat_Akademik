@@ -123,27 +123,24 @@ class PengajuanController extends Controller
     {
         $request->validate([
             'template_surat_id' => 'required|exists:template_surats,id',
-            'fields' => 'nullable|array'
+            'fields' => 'nullable|array',
         ]);
 
-        $mahasiswa = auth()->user()->id;
+        $user = auth()->user();
 
-        $periodeSemester = PeriodeSemester::where('status',1)->first();
+        $periodeSemester = PeriodeSemester::active()->firstOrFail();
 
         Pengajuan::create([
-
-            'template_surat_id' => $request->template_surat_id,
-            'mahasiswa_id' => $mahasiswa->id,
+            'template_surat_id'   => $request->template_surat_id,
+            'mahasiswa_id'        => $user->id,
             'periode_semester_id' => $periodeSemester->id,
-            'status' => Pengajuan::status_dalam_pengajuan,
-            'user_id' => auth()->id(),
-            'data_pengajuan' => $request->fields
-
+            'status'              => Pengajuan::status_dalam_pengajuan,
+            'data_pengajuan'      => $request->fields,
         ]);
 
         return redirect()
             ->route('pengajuan.index')
-            ->with('success','Pengajuan surat berhasil dibuat');
+            ->with('success', 'Pengajuan surat berhasil dibuat');
     }
 
     /**
@@ -174,5 +171,21 @@ class PengajuanController extends Controller
         return redirect()
             ->route('pengajuan.index')
             ->with('success','Pengajuan berhasil dihapus');
+    }
+
+    public function history(){
+
+        $user = auth()->user();
+
+        $pengajuans = Pengajuan::with([
+            'templateSurat',
+            'periodeSemester',
+            'user',
+        ])
+        ->where('mahasiswa_id', $user->id)
+        ->orderByDesc('created_at')
+        ->get();
+
+    return view('pages.pengajuan.history', compact('pengajuans'));
     }
 }
