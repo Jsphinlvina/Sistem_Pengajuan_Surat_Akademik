@@ -30,6 +30,16 @@ $showFields = $showFields ?? [];
                     />
                 </div>
             @endforeach
+            @if ($template->id == 2)
+            <div class="mt-3">
+                <x-form-select
+                    name="fields[kode_mata_kuliah]"
+                    label="Mata Kuliah"
+                    :options="$mataKuliahOptions"
+                    :optionSelect="false"
+                />
+            </div>
+            @endif
             @foreach($formFields as $field)
                 <div class="mt-3">
                     <x-form-input
@@ -48,3 +58,17 @@ $showFields = $showFields ?? [];
         </form>
     </div>
 </div>
+
+@if ($template->id == 2)
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+            document.querySelectorAll('.tom-select').forEach(el => {
+                if (!el.tomselect) {
+                    new TomSelect(el);
+                }
+            });
+        }, 0);
+    });
+</script>
+@endif

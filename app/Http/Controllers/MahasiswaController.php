@@ -46,7 +46,7 @@ class MahasiswaController extends Controller
                 ->map(function ($row) {
                     return [
                         'nrp' => $row[0] ?? null,
-                        'nama' => $row[1] ?? null,
+                        'name' => $row[1] ?? null,
                         'email' => $row[2] ?? null,
                         'alamat' => $row[3] ?? null,
                     ];
@@ -86,7 +86,7 @@ class MahasiswaController extends Controller
 
            Mahasiswa::create([
                'nrp' => $row['nrp'],
-               'nama' => $row['nama'],
+               'name' => $row['nama'],
                'email' => $row['email'],
                'alamat' => $row['alamat'],
                'program_studi_id' => $programStudiId,
@@ -120,7 +120,7 @@ class MahasiswaController extends Controller
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
          $data =$request->validate([
-            'nama' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:mahasiswas,email,'. $mahasiswa->id,
             'nrp' => 'required|string|max:7|unique:mahasiswas,nrp,'. $mahasiswa->id,
             'alamat' => 'required|string|max:255',

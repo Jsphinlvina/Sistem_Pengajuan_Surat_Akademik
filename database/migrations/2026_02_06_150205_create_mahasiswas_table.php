@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->smallIncrements('id');
-            $table->string('nama');
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('nrp')->unique();
             $table->string('alamat');

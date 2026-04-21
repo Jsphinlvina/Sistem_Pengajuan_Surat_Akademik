@@ -15,7 +15,7 @@ class MahasiswaSeeder extends Seeder
     {
         DB::table('mahasiswas')->insert([
             [
-                'nama' => 'Andi Saputra',
+                'name' => 'Andi Saputra',
                 'email' => 'andi.saputra@maranatha.ac.id',
                 'nrp' => '2272001',
                 'alamat' => 'Bandung',
@@ -24,7 +24,7 @@ class MahasiswaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Siti Aminah',
+                'name' => 'Siti Aminah',
                 'email' => 'siti.aminah@maranatha.ac.id',
                 'nrp' => '2272002',
                 'alamat' => 'Jakarta',
@@ -33,7 +33,7 @@ class MahasiswaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Budi Santoso',
+                'name' => 'Budi Santoso',
                 'email' => 'budi.santoso@maranatha.ac.id',
                 'nrp' => '2273001',
                 'alamat' => 'Surabaya',
@@ -42,7 +42,7 @@ class MahasiswaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Rina Putri',
+                'name' => 'Rina Putri',
                 'email' => 'rina.putri@maranatha.ac.id',
                 'nrp' => '2273002',
                 'alamat' => 'Yogyakarta',

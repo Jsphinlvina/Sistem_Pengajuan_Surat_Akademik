@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kurikulum;
+use App\Models\Mahasiswa;
 use App\Models\MahasiswaPeriodeSemester;
+use App\Models\MataKuliah;
 use App\Models\Pengajuan;
 use App\Models\PeriodeSemester;
 use App\Models\TemplateSurat;
@@ -43,6 +46,33 @@ class PengajuanController extends Controller
                 ->with('error', 'Anda tidak aktif pada periode semester saat ini.');
         }
 
+        $mataKuliahOptions = [];
+
+        if ($request->template_surat_id == 2) {
+
+            $kurikulumAktif = Kurikulum::where('status', 1)->firstOrFail();
+
+            $mataKuliahOptions = MataKuliah::where('kurikulum_id', $kurikulumAktif->id)
+            ->orderBy('kode')
+            ->get()
+            ->mapWithKeys(function ($mk) {
+                return [
+                    $mk->kode => "{$mk->kode} - {$mk->nama}"
+                ];
+            });
+        }
+
+        if ($request->template_surat_id == 3) {
+             $isLulus = Mahasiswa::where('id', $user->mahasiswa_id)
+                ->whereNotNull('tahun_lulus')
+                ->exists();
+
+            if(!$isLulus){
+                return back()
+                    ->with('error', 'Tanggal kelulusan Anda belum ditetapkan.');
+            }
+        }
+
         $periode_semester = PeriodeSemester::active()->firstOrFail();
 
         $template = TemplateSurat::findOrFail($request->template_surat_id);
@@ -50,7 +80,7 @@ class PengajuanController extends Controller
         $dynamicFields = $template->dynamic_fields ?? [];
 
         $showFields = [
-            'nama_mahasiswa' => $user->nama,
+            'nama_mahasiswa' => $user->name,
             'email_mahasiswa' => $user->email,
             'nrp_mahasiswa' => $user->nrp,
             'alamat_mahasiswa' => $user->alamat,
@@ -63,7 +93,9 @@ class PengajuanController extends Controller
             'kode_surat',
             'tanggal_surat',
             'prodi_mahasiswa',
-            'tanggal_lulus'
+            'tanggal_lulus',
+            'kode_mata_kuliah',
+            'nama_mata_kuliah',
         ];
 
         $showFieldKeys = array_keys($showFields);
@@ -78,7 +110,8 @@ class PengajuanController extends Controller
             compact(
                 'template',
                 'formFields',
-                'showFields'
+                'showFields',
+                'mataKuliahOptions',
             )
         );
     }
@@ -93,22 +126,17 @@ class PengajuanController extends Controller
             'fields' => 'nullable|array'
         ]);
 
-        $mahasiswa = auth()->user()->mahasiswa;
+        $mahasiswa = auth()->user()->id;
 
         $periodeSemester = PeriodeSemester::where('status',1)->first();
 
         Pengajuan::create([
 
             'template_surat_id' => $request->template_surat_id,
-
             'mahasiswa_id' => $mahasiswa->id,
-
             'periode_semester_id' => $periodeSemester->id,
-
             'status' => Pengajuan::status_dalam_pengajuan,
-
             'user_id' => auth()->id(),
-
             'data_pengajuan' => $request->fields
 
         ]);
