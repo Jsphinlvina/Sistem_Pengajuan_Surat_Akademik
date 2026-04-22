@@ -14,10 +14,11 @@ class MahasiswaPeriodeSemester extends Model
     ];
 
     public const mapping = [
-        1 => 'Aktif',
         0 => 'Cuti',
+        1 => 'Aktif',
         2 => 'Tanpa Kabar',
-        3 => 'Lulus'
+        3 => 'Lulus',
+        4 => 'Sedang Kampus Merdeka'
     ];
 
     public function getStatusTextAttribute(){

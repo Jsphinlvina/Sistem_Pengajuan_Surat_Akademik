@@ -13,6 +13,7 @@ class Pengajuan extends Model
     const status_dalam_pengajuan = 1;
     const status_disetujui = 2;
     const status_ditolak = 3;
+    const status_dibatalkan = 4;
 
     public function getStatusLabelAttribute(): string
     {
@@ -20,6 +21,7 @@ class Pengajuan extends Model
             self::status_dalam_pengajuan => 'Dalam Pengajuan',
             self::status_disetujui       => 'Disetujui',
             self::status_ditolak         => 'Ditolak',
+            self::status_dibatalkan      => 'Dibatalkan',
             default                      => 'Dalam Pengajuan',
         };
     }
@@ -30,7 +32,8 @@ class Pengajuan extends Model
             self::status_dalam_pengajuan => 'bg-yellow-600',
             self::status_disetujui       => 'bg-green-600',
             self::status_ditolak         => 'bg-red-600',
-            default                      => 'bg-gray-500',
+            self::status_dibatalkan      => 'bg-gray-600',
+            default                      => 'bg-yellow-500',
         };
     }
 

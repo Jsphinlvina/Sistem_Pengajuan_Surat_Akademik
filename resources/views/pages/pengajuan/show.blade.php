@@ -1,9 +1,9 @@
 @extends('starter')
-@section('title', 'Edit Pengajuan')
+@section('title', 'Detail Pengajuan')
 
 @section('content')
     @include('pages.pengajuan.form-pengajuan', [
-        'mode' => 'edit',
+        'mode' => 'show',
         'optionSelect' => false,
         'template' => $template,
         'formFields' => $formFields,

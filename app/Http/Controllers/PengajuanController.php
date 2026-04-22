@@ -105,8 +105,7 @@ class PengajuanController extends Controller
             array_diff($dynamicFields, $excludeFields)
         );
 
-        return view(
-            'pages.pengajuan.create',
+        return view('pages.pengajuan.create',
             compact(
                 'template',
                 'formFields',
@@ -148,29 +147,149 @@ class PengajuanController extends Controller
      */
     public function show(Pengajuan $pengajuan)
     {
-        $pengajuan->load(
+        $pengajuan->load([
             'mahasiswa',
             'templateSurat',
             'periodeSemester',
-            'user'
+        ]);
+
+        $template = $pengajuan->templateSurat;
+        $periodeSemester = $pengajuan->periodeSemester;
+
+        $dynamicFields = $template->dynamic_fields ?? [];
+
+        $kodeMk = $pengajuan->data_pengajuan['kode_mata_kuliah'] ?? null;
+
+        $mataKuliahLabel = '-';
+
+        if ($kodeMk) {
+            $mk = MataKuliah::where('kode', $kodeMk)->first();
+            if ($mk) {
+                $mataKuliahLabel = $mk->kode . ' - ' . $mk->nama;
+            }
+        }
+
+        $showFields = [
+            'nama_mahasiswa'   => $pengajuan->mahasiswa->name,
+            'email_mahasiswa'  => $pengajuan->mahasiswa->email,
+            'nrp_mahasiswa'    => $pengajuan->mahasiswa->nrp,
+            'alamat_mahasiswa' => $pengajuan->mahasiswa->alamat,
+            'periode_semester' => $periodeSemester->nama,
+        ];
+
+        $systemFieldKeys = [
+            'nama_kaprodi',
+            'nik_kaprodi',
+            'kode_surat',
+            'tanggal_surat',
+            'prodi_mahasiswa',
+            'tanggal_lulus',
+            'kode_mata_kuliah',
+            'nama_mata_kuliah',
+        ];
+
+        $formFields = array_values(
+            array_diff($dynamicFields, array_keys($showFields), $systemFieldKeys)
         );
 
-        return view(
-            'pages.pengajuan.show',
-            compact('pengajuan')
+        return view('pages.pengajuan.show', compact(
+            'template',
+            'formFields',
+            'showFields',
+            'pengajuan',
+            'mataKuliahLabel'
+        ));
+    }
+
+    public function edit(Pengajuan $pengajuan)
+    {
+        if ($pengajuan->status !== Pengajuan::status_dalam_pengajuan) {
+            abort(403, 'Pengajuan tidak bisa diedit');
+        }
+
+        $mataKuliahOptions = [];
+
+        if ($pengajuan->template_surat_id == 2) {
+
+            $kurikulumAktif = Kurikulum::where('status', 1)->firstOrFail();
+
+            $mataKuliahOptions = MataKuliah::where('kurikulum_id', $kurikulumAktif->id)
+            ->orderBy('kode')
+            ->get()
+            ->mapWithKeys(function ($mk) {
+                return [
+                    $mk->kode => "{$mk->kode} - {$mk->nama}"
+                ];
+            });
+        }
+
+        $template = $pengajuan->templateSurat;
+        $periodeSemester = $pengajuan->periodeSemester;
+
+        $dynamicFields = $template->dynamic_fields ?? [];
+
+        $showFields = [
+            'nama_mahasiswa'   => $pengajuan->mahasiswa->name,
+            'email_mahasiswa'  => $pengajuan->mahasiswa->email,
+            'nrp_mahasiswa'    => $pengajuan->mahasiswa->nrp,
+            'alamat_mahasiswa' => $pengajuan->mahasiswa->alamat,
+            'periode_semester' => $periodeSemester->nama,
+        ];
+
+        $systemFieldKeys = [
+            'nama_kaprodi',
+            'nik_kaprodi',
+            'kode_surat',
+            'tanggal_surat',
+            'prodi_mahasiswa',
+            'tanggal_lulus',
+            'kode_mata_kuliah',
+            'nama_mata_kuliah',
+        ];
+
+        $formFields = array_values(
+            array_diff($dynamicFields, array_keys($showFields), $systemFieldKeys)
+        );
+
+        return view('pages.pengajuan.edit',
+            compact(
+                'template',
+                'formFields',
+                'showFields',
+                'pengajuan' ,
+                'mataKuliahOptions',
+                )
         );
     }
 
-    /**
-     * Hapus pengajuan
-     */
-    public function destroy(Pengajuan $pengajuan)
+    public function update(Request $request, Pengajuan $pengajuan)
     {
-        $pengajuan->delete();
+        if ($pengajuan->status !== Pengajuan::status_dalam_pengajuan) {
+            abort(403, 'Pengajuan tidak bisa diedit');
+        }
+
+        $request->validate([
+            'fields' => 'nullable|array',
+        ]);
+
+        $pengajuan->update([
+            'data_pengajuan' => $request->fields,
+        ]);
 
         return redirect()
-            ->route('pengajuan.index')
-            ->with('success','Pengajuan berhasil dihapus');
+            ->route('pengajuan.history')
+            ->with('success', 'Pengajuan berhasil diperbarui');
+    }
+
+    public function destroy(Pengajuan $pengajuan)
+    {
+         $pengajuan->update([
+            'status' => Pengajuan::status_dibatalkan,
+        ]);
+
+        return redirect()
+            ->route('pengajuan.history')
+            ->with('success', 'Pengajuan berhasil dibatalkan');
     }
 
     public function history(){
