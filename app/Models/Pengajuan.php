@@ -15,6 +15,22 @@ class Pengajuan extends Model
     const status_ditolak = 3;
     const status_dibatalkan = 4;
 
+    protected $fillable =[
+        'periode_semester_id',
+        'mahasiswa_id',
+        'template_surat_id',
+        'status',
+        'catatan',
+        'file_surat',
+        'user_id',
+        'mata_kuliah_id',
+        'data_pengajuan'
+    ];
+
+    protected $casts = [
+        'data_pengajuan' => 'array',
+    ];
+
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
@@ -37,22 +53,10 @@ class Pengajuan extends Model
         };
     }
 
-    protected $fillable =[
-        'periode_semester_id',
-        'mahasiswa_id',
-        'template_surat_id',
-        'status',
-        'catatan',
-        'file_surat',
-        'user_id',
-        'mata_kuliah_id',
-        'data_pengajuan'
-    ];
-
-    protected $casts = [
-        'data_pengajuan' => 'array',
-    ];
-
+    public function scopeByProgramStudi($query)
+    {
+        return $query->whereHas('mahasiswa');
+    }
     public function periodeSemester(){
         return $this->belongsTo(PeriodeSemester::class);
     }
