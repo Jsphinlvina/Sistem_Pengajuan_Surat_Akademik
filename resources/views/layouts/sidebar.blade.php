@@ -10,6 +10,7 @@ $isPengajuanActive = request()->routeIs('pengajuan.index');
 $isTemplateSurat = request()->route('template-surat.index');
 $isPengajuanHistoryActive = request()->route('pengajuan.history');
 $isMahasiswaDosenActive = $isMahasiswaActive || $isDosenActive;
+$isDataPengajuanActive = $isPengajuanActive || $isPengajuanHistoryActive;
 $isPeriodeKurikulumActive = $isPeriodeActive || $isKurikulumActive;
 
 $dashboardRoute = match(auth()->user()->role) {
@@ -85,6 +86,60 @@ default => 'mahasiswa.dashboard',
           @endcan()
 
           @can('staff')
+          <li>
+            <a href="#" @click.prevent="selected = (selected === 'DataPengajuan' ? '':'DataPengajuan')"
+              class="menu-item group"
+              :class="(selected === 'DataPengajuan' || {{ $isDataPengajuanActive ? 'true' : 'false' }}) ? 'menu-item-active' : 'menu-item-inactive'">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+</svg>
+
+
+
+              <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                Pengajuan
+              </span>
+
+              </span>
+
+              <svg class="menu-item-arrow absolute  stroke-current"
+                :class="[(selected === 'DataPengajuan') ? 'menu-item-arrow-active' : 'menu-item-arrow-inactive', sidebarToggle ? 'lg:hidden' : '' ]"
+                width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585" stroke="" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+
+            <div class="translate transform overflow-hidden"
+              :class="(selected === 'DataPengajuan') ? 'block' :'hidden'">
+              <ul :class="sidebarToggle ? 'lg:hidden' : 'flex'" class="menu-dropdown mt-2 flex flex-col gap-1 pl-9">
+                <li>
+                  <a href="{{ route('mahasiswa.index') }}"
+                    class="menu-item group {{ $isPengajuanActive ? 'menu-item-active' : 'menu-item-inactive' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+</svg>
+
+                    <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                      Data Pengajuan
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ route('dosen.index') }}"
+                    class="menu-item group {{ $isPengajuanHistoryActive ? 'menu-item-active' : 'menu-item-inactive' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+</svg>
+
+                    <span class="menu-item-text" :class="sidebarToggle ? 'lg:hidden' : ''">
+                      History Pengajuan
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
           <li>
             <a href="#" @click.prevent="selected = (selected === 'MahasiswaDosen' ? '':'MahasiswaDosen')"
               class="menu-item group"
