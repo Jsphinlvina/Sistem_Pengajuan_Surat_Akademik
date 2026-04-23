@@ -34,6 +34,45 @@ $showFields = $showFields ?? [];
                     />
                 </div>
             @endforeach
+            @if ($template->id == 2 && !$isShow)
+            <div class="mt-3">
+                <p class="mb-1.5 text-sm font-medium text-gray-700">Lainnya Mahasiswa</p>
+
+                <div id="mahasiswa-wrapper">
+                    @php
+                        $listMahasiswa = old(
+                            'fields.mahasiswa',
+                            $pengajuan->data_pengajuan['mahasiswa'] ?? [[]]
+                        );
+                    @endphp
+
+                    @foreach($listMahasiswa as $i => $m)
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <x-form-input
+                                name="fields[mahasiswa][{{ $i }}][nrp]"
+                                :value="$m['nrp'] ?? ''"
+                                :readonly="$isShow"
+                                placeholder="NRP"
+                            />
+                            <x-form-input
+                                name="fields[mahasiswa][{{ $i }}][nama]"
+                                :value="$m['nama'] ?? ''"
+                                :readonly="$isShow"
+                                placeholder="Nama Mahasiswa"
+                            />
+                        </div>
+                    @endforeach
+                </div>
+
+                <button
+                    type="button"
+                    onclick="addMahasiswa()"
+                    class="px-4 py-1 text-sm font-medium rounded-lg text-white bg-gray-500"
+                >
+                    + Tambah Mahasiswa
+                </button>
+            </div>
+            @endif
             @if ($template->id == 2)
                 <div class="mt-3">
                 @if ($isShow)
@@ -50,7 +89,8 @@ $showFields = $showFields ?? [];
                         label="Mata Kuliah"
                         :options="$mataKuliahOptions"
                         :optionSelect="false"
-                        :selected="old('fields.kode_mata_kuliah', $pengajuan->data_pengajuan['kode_mata_kuliah'] ?? null)"
+                        :value="old('fields.kode_mata_kuliah', $pengajuan->data_pengajuan['kode_mata_kuliah'] ?? null)"
+                        required
                     />
                 @endif
                 </div>
@@ -62,6 +102,7 @@ $showFields = $showFields ?? [];
                         label="{{ ucwords(str_replace('_',' ',$field)) }}"
                         :value="old('fields.'.$field, $pengajuan->data_pengajuan[$field] ?? '')"
                         :readonly="$isShow"
+                        required
                     />
                 </div>
             @endforeach
@@ -78,3 +119,33 @@ $showFields = $showFields ?? [];
         </form>
     </div>
 </div>
+
+
+<script>
+let index = {{ count($listMahasiswa ?? [0]) }};
+
+function addMahasiswa() {
+    const wrapper = document.getElementById('mahasiswa-wrapper');
+
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-2 gap-3 mb-2';
+
+    row.innerHTML = `
+        <x-form-input
+            name="fields[mahasiswa][${index}][nrp]"
+            :value="$m['nrp'] ?? ''"
+            :readonly="$isShow"
+            placeholder="NRP"
+        />
+        <x-form-input
+            name="fields[mahasiswa][${index}][nama]"
+            :value="$m['nama'] ?? ''"
+            :readonly="$isShow"
+            placeholder="Nama Mahasiswa"
+        />
+    `;
+
+    wrapper.appendChild(row);
+    index++;
+}
+</script>

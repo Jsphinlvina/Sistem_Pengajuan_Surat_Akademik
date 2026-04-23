@@ -129,16 +129,24 @@ class PengajuanController extends Controller
 
         $periodeSemester = PeriodeSemester::active()->firstOrFail();
 
+        $mataKuliahId = null;
+
+        if ( (int) $request->template_surat_id === 2 && !empty($request->fields['kode_mata_kuliah'])) {
+            $mataKuliah = MataKuliah::where('kode', $request->fields['kode_mata_kuliah'])->first();
+            $mataKuliahId = $mataKuliah?->id;
+        }
+
         Pengajuan::create([
             'template_surat_id'   => $request->template_surat_id,
             'mahasiswa_id'        => $user->id,
             'periode_semester_id' => $periodeSemester->id,
+            'mata_kuliah_id'      => $mataKuliahId,
             'status'              => Pengajuan::status_dalam_pengajuan,
             'data_pengajuan'      => $request->fields,
         ]);
 
         return redirect()
-            ->route('pengajuan.index')
+            ->route('pengajuan.history')
             ->with('success', 'Pengajuan surat berhasil dibuat');
     }
 
@@ -168,6 +176,8 @@ class PengajuanController extends Controller
                 $mataKuliahLabel = $mk->kode . ' - ' . $mk->nama;
             }
         }
+
+        $mahasiswa = collect($pengajuan->data_pengajuan['mahasiswa'] ?? []);
 
         $showFields = [
             'nama_mahasiswa'   => $pengajuan->mahasiswa->name,
