@@ -24,10 +24,9 @@ $isEdit = $mode === 'edit';
                      <p>Kode Surat</p>
                      <p>Nama Kepala Program Studi</p>
                      <p>NIK Kepala Program Studi</p>
-                     <p></p>
                      <p>Nama Mahasiswa</p>
                      <p>NRP Mahasiswa</p>
-                     <p>Tanggal Lulus</p>
+                     <p>Program Studi Mahasiswa</p>
                  </div>
                  <div>
                      <p>:</p>
@@ -42,21 +41,19 @@ $isEdit = $mode === 'edit';
                      <p>kode_surat</p>
                      <p>nama_kaprodi</p>
                      <p>nik_kaprodi</p>
-                     <p></p>
                      <p>nama_mahasiswa</p>
                      <p>nrp_mahasiswa</p>
-                     <p>tanggal_lulus</p>
+                     <p>prodi_mahasiswa</p>
                  </div>
              </div>
              <div class="flex gap-4">
                  <div>
+                     <p>Tanggal Lulus</p>
                      <p>Alamat Mahasiswa</p>
                      <p>Periode Semester</p>
                      <p>Keperluan Surat</p>
-                     <p></p>
                      <p>Nama Mata Kuliah</p>
                      <p>Kode Mata Kuliah</p>
-                     <p>Nama yang Dituju</p>
                  </div>
                  <div>
                      <p>:</p>
@@ -68,25 +65,27 @@ $isEdit = $mode === 'edit';
                      <p>:</p>
                  </div>
                  <div>
+                     <p>tanggal_lulus</p>
                      <p>alamat_mahasiswa</p>
                      <p>periode_semester</p>
                      <p>keperluan_surat</p>
-                     <p></p>
                      <p>nama_mata_kuliah</p>
                      <p>kode_mata_kuliah</p>
-                     <p>nama_dituju</p>
                  </div>
              </div>
              <div class="flex gap-4">
                  <div>
+                     <p>Nama yang Dituju</p>
                      <p>Jabatan yang dituju</p>
                      <p>Topik Tugas</p>
                  </div>
                  <div>
                      <p>:</p>
                      <p>:</p>
+                     <p>:</p>
                  </div>
                  <div>
+                     <p>nama_dituju</p>
                      <p>jabatan_dituju</p>
                      <p>topik_tugas</p>
                  </div>
@@ -157,7 +156,7 @@ $isEdit = $mode === 'edit';
     plugins: [
       'anchor', 'autolink', 'charmap', 'code', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
       // Try the most popular premium features until Apr 19, 2026:
-      'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+      // 'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'tinymceai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
     ],
     toolbar: 'undo redo | tinymceai-chat tinymceai-quickactions tinymceai-review | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | code',
     tinycomments_mode: 'embedded',
