@@ -7,6 +7,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Blade;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 \Carbon\Carbon::setLocale('id');
 
@@ -79,34 +80,55 @@ class TemplateSuratController extends Controller
     {
         $this->authorize('view', $templateSurat);
 
-        $programStudi = $templateSurat->programStudi;
-
         $kopSuratPath = null;
+        $programStudi = $templateSurat->programStudi;
 
         if ($programStudi && $programStudi->kop_surat) {
             $kopSuratPath = storage_path('storage/' . $programStudi->kop_surat);
         }
 
-        $data = [
-            'kode_surat' => '123/SK/TI/2025',
-            'nama_kaprodi' => 'Dr. Andi Wijaya',
-            'nik_kaprodi' => '1987654321',
 
-            'mahasiswa' => [
-                (object)[
-                    'no' => 1,
-                    'nama' => 'Budi Santoso',
-                    'nrp' => '2272001'
-                ],
-                (object)[
-                    'no' => 2,
-                    'nama' => 'Andi Wijaya',
-                    'nrp' => '2272002'
-                ]
-            ],
-
-            'tanggal_surat' => now()->translatedFormat('d F Y'),
+        $mahasiswa = [
+            (object)['nama' => 'Budi Santoso', 'nrp' => '2272001'],
+            (object)['nama' => 'Andi Wijaya',  'nrp' => '2272002'],
         ];
+
+        $tableMahasiswa = view(
+            'components.table-mahasiswa',
+            compact('mahasiswa')
+        )->render();
+
+        $defaultData = collect($templateSurat->dynamic_fields ?? [])
+            ->mapWithKeys(fn ($field) => [$field => ''])
+            ->toArray();
+
+        $dummyData = [
+            'kode_surat'        => '123/SK/TI/IV/2026',
+            'nama_kaprodi'      => 'Dr. Andi Wijaya, S.T., M.T.',
+            'nik_kaprodi'       => '1987654321',
+
+            'nama_mahasiswa'    => 'Budi Santoso',
+            'nrp_mahasiswa'     => '2272001',
+            'prodi_mahasiswa'   => 'Teknik Informatika',
+            'alamat_mahasiswa'  => 'Jl. Merdeka No. 10, Bandung',
+
+            'periode_semester'  => 'Semester Genap 2025/2026',
+            'tanggal_lulus'     => '30 Agustus 2026',
+
+            'keperluan_surat'   => 'Permohonan Surat Pengantar',
+            'topik_tugas'       => 'Pengembangan Sistem Informasi Akademik',
+
+            'nama_mata_kuliah'  => 'Pemrograman Web Lanjut',
+            'kode_mata_kuliah'  => 'IF204',
+
+            'nama_dituju'       => 'Pimpinan PT Teknologi Nusantara',
+            'jabatan_dituju'    => 'Manager IT',
+
+            'tanggal_surat'     => now()->translatedFormat('d F Y'),
+            'tableMahasiswa'    => $tableMahasiswa,
+        ];
+
+        $data = array_merge($defaultData, $dummyData);
 
         $html = Blade::render(
             html_entity_decode($templateSurat->xml_content, ENT_QUOTES | ENT_HTML5),
