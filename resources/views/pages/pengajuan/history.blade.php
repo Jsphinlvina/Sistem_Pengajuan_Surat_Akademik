@@ -13,7 +13,7 @@
    {{-- Head Table --}}
    <x-slot:head>
       <tr class="border-b border-gray-100 dark:border-gray-800">
-         @foreach(['No','Pengajuan Surat',' Tanggal Pengajuan', 'Status', 'Action'] as $column)
+         @foreach(['No', 'Periode Semester','Pengajuan Surat',' Tanggal Pengajuan', 'Status', 'Action'] as $column)
          <th class="px-5 py-3 sm:px-6">
             <div class="flex items-center">
                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -40,9 +40,17 @@
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
                <p class="text-gray-500 text-theme-sm ">
+                  {{$pengajuan->periodeSemester->nama}}
+               </p>
+            </div>
+         </td>
+         <td class="px-5 py-4 sm:px-6">
+            <div class="flex items-center">
+               <p class="text-gray-500 text-theme-sm ">
                   {{$pengajuan->templateSurat->nama}}
                </p>
             </div>
+         </td>
          <td class="px-5 py-4 sm:px-6">
             <div class="flex items-center">
                <p class="text-gray-500 text-theme-sm ">

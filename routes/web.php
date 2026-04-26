@@ -28,14 +28,16 @@ Route::get('staff', function (){
     return view('auth.login-staff');
 });
 
+
+
 // Mahasiswa
 Route::middleware(['web', 'auth:mahasiswa'])->group(function () {
-   Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
+    Route::get('/mahasiswa/dashboard', [MahasiswaDashboardController::class, 'index'] )->name('mahasiswa.dashboard');
 
    // Pengajuan
-   Route::get('/pengajuan/history', [PengajuanController::class, 'history'])->name('pengajuan.history');
-   Route::post('/pengajuan/pengajuan', [PengajuanController::class, 'redirectHalamanPengajuan'])->name('pengajuan.redirect');
-   Route::resource('pengajuan', PengajuanController::class);
+    Route::get('/pengajuan/history', [PengajuanController::class, 'history'])->name('pengajuan.history');
+    Route::post('/pengajuan/pengajuan', [PengajuanController::class, 'redirectHalamanPengajuan'])->name('pengajuan.redirect');
+    Route::resource('pengajuan', PengajuanController::class);
 });
 
 Route::middleware('auth')->group(function () {
@@ -60,6 +62,10 @@ Route::middleware(['auth', 'role:0'])->group(function () {
 // Staff
 Route::middleware(['auth', 'role:1'])->group(function () {
     Route::get('/staff/dashboard', [StaffDashboardController::class, 'index'] )->name('staff.dashboard');
+
+    // Pengajuan
+    Route::get('/pengajuan/history/penganjuan', [PengajuanController::class, 'historyPengajuan'])->name('pengajuan.history.pengajuan');
+    Route::get('/pengajuan/proses', [PengajuanController::class, 'proses'])->name('pengajuan.proses');
 
     // Mata Kuliah
     Route::get('/mata-kuliah/template/download', function (){
