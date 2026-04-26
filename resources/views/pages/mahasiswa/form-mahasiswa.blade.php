@@ -100,7 +100,7 @@ $isEdit = $mode === 'edit';
                     placeholder="72" />
             </div>
             <div>
-                <x-form-input name="nama" label="Nama Lengkap Mahasiswa" :value="$mahasiswa?->name"
+                <x-form-input name="name" label="Nama Lengkap Mahasiswa" :value="$mahasiswa?->name"
                     placeholder="John Doe" />
             </div>
             </div>
