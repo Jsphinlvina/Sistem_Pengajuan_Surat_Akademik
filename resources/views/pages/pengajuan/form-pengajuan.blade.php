@@ -36,7 +36,7 @@ $showFields = $showFields ?? [];
             @endforeach
             @if ($template->id == 2 && !$isShow)
             <div class="mt-3">
-                <p class="mb-1.5 text-sm font-medium text-gray-700">Lainnya Mahasiswa</p>
+                <p class="mb-1.5 text-sm font-medium text-gray-700">Anggota Mahasiswa Lainnya</p>
 
                 <div id="mahasiswa-wrapper">
                     @php
@@ -67,7 +67,7 @@ $showFields = $showFields ?? [];
                 <button
                     type="button"
                     onclick="addMahasiswa()"
-                    class="px-4 py-1 text-sm font-medium rounded-lg text-white bg-gray-500"
+                    class="px-4 py-1 text-sm font-medium rounded-lg text-white bg-blue-500"
                 >
                     + Tambah Mahasiswa
                 </button>

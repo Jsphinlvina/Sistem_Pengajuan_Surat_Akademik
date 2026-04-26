@@ -53,9 +53,10 @@ class Pengajuan extends Model
         };
     }
 
-    public function scopeByProgramStudi($query)
+    public function scopeByProgramStudi($query, $programStudiId)
     {
-        return $query->whereHas('mahasiswa');
+       return $query->whereHas('mahasiswa', fn ($q) =>
+            $q->where('program_studi_id', $programStudiId));
     }
     public function periodeSemester(){
         return $this->belongsTo(PeriodeSemester::class);
