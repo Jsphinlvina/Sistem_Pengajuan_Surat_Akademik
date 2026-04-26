@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class StaffDashboardController extends Controller
 {
     public function index(){
-        $pengajuans = Pengajuan::byProgramStudi()
+        $pengajuans = Pengajuan::byProgramStudi(auth()->user()->program_studi_id)
             ->where('created_at', '>=', now()->subWeek())
             ->where('status', '=', 1)
             ->get();

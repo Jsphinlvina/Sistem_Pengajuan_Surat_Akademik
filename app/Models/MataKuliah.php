@@ -9,6 +9,17 @@ class MataKuliah extends Model
 {
     use SmartDelete;
 
+    public static function optionsByKurikulumAktif(){
+        $kurikulum = Kurikulum::where('status', 1)->firstOrFail();
+
+        return self::where('kurikulum_id', $kurikulum->id)
+            ->orderBy('kode')
+            ->get()
+            ->mapWithKeys(fn ($mk) => [
+                $mk->kode => "{$mk->kode} - {$mk->nama}"
+            ]);
+    }
+
     protected $fillable = [
       'kode', 'nama', 'kurikulum_id', 'status'
     ];
