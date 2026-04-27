@@ -45,7 +45,13 @@ $dashboardRoute = 'login';
 
   <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
     <!-- Sidebar Menu -->
-    <nav x-data="{ selected: '{{ $isMahasiswaDosenActive ? 'MahasiswaDosen' : '' }}', page: '' }">
+    <nav x-data="{
+        selected: '{{
+          $isMahasiswaDosenActive ? 'MahasiswaDosen' :
+          ($isDataPengajuanActive ? 'DataPengajuan' :
+          ($isPeriodeKurikulumActive ? 'PeriodeKurikulum' : ''))
+        }}'
+    }">
       <!-- Menu Group -->
       <div>
         <ul class="mb-6 flex flex-col gap-4">
@@ -135,7 +141,7 @@ $dashboardRoute = 'login';
                 </li>
                 <li>
                   <a href="{{ route('pengajuan.history.pengajuan') }}"
-                    class="menu-item group {{ $isPengajuanHistoryActive ? 'menu-item-active' : 'menu-item-inactive' }}">
+                    class="menu-item group {{ $isPengajuanHistoryStaffActive ? 'menu-item-active' : 'menu-item-inactive' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="size-6">
                       <path stroke-linecap="round" stroke-linejoin="round"
