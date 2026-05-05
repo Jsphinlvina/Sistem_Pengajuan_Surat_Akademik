@@ -13,7 +13,7 @@ class UserController extends Controller
     private function getProgramStudiFromKode($kode)
     {
         $kodeProdi = substr($kode, 0, 2);
-            return ProgramStudi::where('kode', $kodeProdi)->first();
+        return ProgramStudi::where('kode', $kodeProdi)->first();
     }
 
     /**
@@ -37,17 +37,15 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
+    public function store(Request $request)
     {
         $data = $request->validate([
             'kode' => 'required|unique:users,kode',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
             'program_studi_id' => 'required|exists:program_studis,id'
         ]);
 
-        $data['password'] = bcrypt($data['password']);
         $data['role'] = 1;
 
         User::create($data);
@@ -81,8 +79,7 @@ class UserController extends Controller
         $data = $request->validate([
             'kode' => 'required|unique:users,kode,' . $user->id,
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'. $user->id,
-            'password' => 'nullable|min:8|confirmed',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'program_studi_id' => 'required|exists:program_studis,id'
         ]);
 
@@ -110,7 +107,7 @@ class UserController extends Controller
         return redirect()->route('user.index')->with(
             $deleted ? 'success' : 'error',
             $deleted ? 'User berhasil dihapus' : 'User tidak dapat dihapus karena sudah digunakan'
-          );
+        );
     }
 
     public function updateStatus(Request $request, User $user)

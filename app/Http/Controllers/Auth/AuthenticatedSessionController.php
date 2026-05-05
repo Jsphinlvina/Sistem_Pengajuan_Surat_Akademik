@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
         $request->validated();
 
@@ -45,9 +45,9 @@ class AuthenticatedSessionController extends Controller
 
         $mahasiswa = Mahasiswa::where('nrp', $data['user']['username'])->first();
 
-        if(!$mahasiswa){
+        if (!$mahasiswa) {
             return back()->withErrors([
-                'username'=> 'Data tidak tersedia dalam sistem'
+                'username' => 'Data tidak tersedia dalam sistem'
             ]);
         } elseif ($mahasiswa->first_time_login) {
             session([
@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
                 'first_login_data' => $mahasiswa,
                 'token' => $data['token'],
             ]);
-          return redirect()->route('mahasiswa.first-login');
+            return redirect()->route('mahasiswa.first-login');
         }
 
         Auth::guard('web')->logout();
@@ -84,8 +84,8 @@ class AuthenticatedSessionController extends Controller
 
             if (!$user) {
                 return back()->withErrors([
-                'username' => 'Akun tidak terdata dalam sistem',
-                 ]);
+                    'username' => 'Akun tidak terdata dalam sistem',
+                ]);
             }
 
             Auth::login($user);
@@ -108,10 +108,10 @@ class AuthenticatedSessionController extends Controller
 
     public function loginAdmin(AdminLoginRequest $request): RedirectResponse
     {
-      $request->authenticate();
-      $request->session()->regenerate();
+        $request->authenticate();
+        $request->session()->regenerate();
 
-      return redirect()->intended(route('admin.dashboard'));
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     /**
