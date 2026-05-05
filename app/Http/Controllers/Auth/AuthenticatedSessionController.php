@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\AdminLoginRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Mahasiswa;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
+
+class AuthenticatedSessionController extends Controller
+{
+    /**
+     * Display the login view.
+     */
+    public function create(): View
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     */
+   public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->validated();
+
+        $response = Http::post('http://127.0.0.1:8001/api/login', [
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);
+
+        if (!$response->successful()) {
+            return back()->withErrors([
+                'username' => 'Username atau password salah',
+            ])->onlyInput('username');
+        }
+
+        $data = $response->json();
+
+        $mahasiswa = Mahasiswa::where('nrp', $data['user']['username'])->first();
+
+        if(!$mahasiswa){
+            return back()->withErrors([
+                'username'=> 'Data tidak tersedia dalam sistem'
+            ]);
+        } elseif ($mahasiswa->first_time_login) {
+            session([
+                'first_login' => true,
+                'first_login_data' => $mahasiswa,
+                'token' => $data['token'],
+            ]);
+          return redirect()->route('mahasiswa.first-login');
+        }
+
+        Auth::guard('web')->logout();
+        Auth::guard('mahasiswa')->login($mahasiswa);
+
+        $request->session()->regenerate();
+
+        session(['token' => $data['token']]);
+
+        return redirect()->route('mahasiswa.dashboard');
+    }
+
+    public function loginStaff(LoginRequest $request): RedirectResponse
+    {
+        $request->validated();
+
+        $response = Http::post('http://127.0.0.1:8001/api/login', [
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            $user = User::where('kode', $data['user']['username'])->first();
+
+            if (!$user) {
+                return back()->withErrors([
+                'username' => 'Akun tidak terdata dalam sistem',
+                 ]);
+            }
+
+            Auth::login($user);
+            $request->session()->regenerate();
+            session(['token' => $data['token']]);
+
+            return redirect()->route('staff.dashboard');
+        }
+
+        if ($response->failed()) {
+            return back()->withErrors([
+                'username' => 'Gagal terhubung ke server autentikasi',
+            ]);
+        }
+
+        return back()->withErrors([
+            'username' => 'Username atau password salah',
+        ])->onlyInput('username');
+    }
+
+    public function loginAdmin(AdminLoginRequest $request): RedirectResponse
+    {
+      $request->authenticate();
+      $request->session()->regenerate();
+
+      return redirect()->intended(route('admin.dashboard'));
+    }
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        if (Auth::guard('mahasiswa')->check()) {
+            Auth::guard('mahasiswa')->logout();
+        }
+
+        if (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+        }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
+}

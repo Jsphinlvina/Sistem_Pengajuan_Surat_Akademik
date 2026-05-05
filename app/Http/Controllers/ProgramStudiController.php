@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ProgramStudi;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class ProgramStudiController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $programStudis = ProgramStudi::all();
+        return view('pages.program-studi.index', compact('programStudis'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('pages.program-studi.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'kode' => 'required|unique:program_studis',
+            'nama' => 'required|unique:program_studis',
+            'kop_surat' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+
+        ]);
+
+        if ($request->hasFile('kop_surat')) {
+                $path = $request->file('kop_surat')->store('kop_surat', 'public');
+                $data['kop_surat'] = $path;
+        }
+
+        ProgramStudi::create($data);
+        return redirect()->route('program-studi.index')->with('success', 'Data Program Studi Berhahsil Ditambahkan');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(ProgramStudi $programStudi)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(ProgramStudi $programStudi)
+    {
+        return view('pages.program-studi.edit', compact('programStudi'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, ProgramStudi $programStudi)
+    {
+        $data = $request->validate([
+            'kode' => 'required|unique:program_studis,kode,' . $programStudi->id,
+            'nama' => 'required|unique:program_studis,nama,' . $programStudi->id,
+            'kop_surat' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('kop_surat')) {
+            if ($programStudi->kop_surat) {
+                Storage::disk('public')->delete($programStudi->kop_surat);
+            }
+            $path = $request->file('kop_surat')->store('kop_surat', 'public');
+            $data['kop_surat'] = $path;
+        }
+
+        $programStudi->update($data);
+
+        return redirect()->route('program-studi.index')
+            ->with('success', 'Data Program Studi Berhasil Diupdate');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(ProgramStudi $programStudi)
+    {
+        $deleted = $programStudi->smartDelete(['kurikulum', 'user', 'mahasiswa']);
+
+        return redirect()->route('program-studi.index')->with(
+            $deleted ? 'success' : 'error',
+            $deleted ? 'Program Studi berhasil dihapus permanen' : 'Program Studi tidak dapat dihapus karena data sudah digunakan'
+        );
+    }
+
+    public function updateStatus(Request $request, ProgramStudi $programStudi)
+    {
+        $programStudi->status = $request->status;
+        $updated = $programStudi->save();
+
+        return redirect()->route('program-studi.index')->with(
+            $updated ? 'success' : 'error',
+            $updated ? 'Program Studi berhasil diperbaharui' : 'Program Studi gagal diperbaharui'
+        );
+    }
+}
