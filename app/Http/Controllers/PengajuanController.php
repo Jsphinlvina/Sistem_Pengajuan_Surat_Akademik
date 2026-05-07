@@ -27,15 +27,12 @@ class PengajuanController extends Controller
 
     public function index()
     {
-        $templateSurats = TemplateSurat::where('status',1)->get();
+        $templateSurats = TemplateSurat::where('status', 1)->get();
 
         return view('pages.pengajuan.index', compact('templateSurats'));
     }
 
-    /**
-     * Redirect ke form pengajuan berdasarkan template
-     */
-   public function redirectHalamanPengajuan(Request $request)
+    public function redirectHalamanPengajuan(Request $request)
     {
         $request->validate([
             'template_surat_id' => 'required|exists:template_surats,id',
@@ -43,9 +40,9 @@ class PengajuanController extends Controller
 
         $user = auth()->user();
 
-         $isAktif = MahasiswaPeriodeSemester::where('mahasiswa_id', $user->id)
+        $isAktif = MahasiswaPeriodeSemester::where('mahasiswa_id', $user->id)
             ->where('status', 1)
-            ->whereHas('periodeSemester', fn ($q) => $q->active())
+            ->whereHas('periodeSemester', fn($q) => $q->active())
             ->exists();
 
         if (! $isAktif && $user->tahun_lulus == null) {
@@ -56,31 +53,31 @@ class PengajuanController extends Controller
 
         $mataKuliahOptions = [];
 
-        if ($request->template_surat_id != 3){
+        if ($request->template_surat_id != 3) {
             $isLulus = $user->tahun_lulus;
-            if($isLulus){
+            if ($isLulus) {
                 return back()
                     ->with('error', 'Anda telah ditanyakan lulus.');
             }
         }
 
         if ($request->template_surat_id == 2) {
-           $mataKuliahOptions = MataKuliah::optionsByKurikulumAktif();
+            $mataKuliahOptions = MataKuliah::optionsByKurikulumAktif();
         }
 
         if ($request->template_surat_id == 3) {
-             $isLulus = $user->tahun_lulus;
+            $isLulus = $user->tahun_lulus;
 
-             $suratPengajuan = Pengajuan::where('template_surat_id', $request->template_surat_id)
-                 ->where('mahasiswa_id', $user->id)
-                 ->whereIn('status', [Pengajuan::status_disetujui, Pengajuan::status_dalam_pengajuan,]);
+            $suratPengajuan = Pengajuan::where('template_surat_id', $request->template_surat_id)
+                ->where('mahasiswa_id', $user->id)
+                ->whereIn('status', [Pengajuan::status_disetujui, Pengajuan::status_dalam_pengajuan,]);
 
-             if ($suratPengajuan->exists()) {
+            if ($suratPengajuan->exists()) {
                 return back()
                     ->with('error', 'Anda sudah pernah mengajukan SKL.');
-             }
+            }
 
-            if ($isLulus == null){
+            if ($isLulus == null) {
                 return back()
                     ->with('error', 'Tanggal kelulusan Anda belum ditetapkan.');
             }
@@ -99,10 +96,10 @@ class PengajuanController extends Controller
             'email_mahasiswa' => $user->email,
         ];
 
-        if ($request->template_surat_id == 1){
-           $showFields['alamat_mahasiswa'] = $user->alamat;
+        if ($request->template_surat_id == 1) {
+            $showFields['alamat_mahasiswa'] = $user->alamat;
         } elseif ($request->template_surat_id == 3) {
-           $showFields['tahun_lulus'] = $user->tahun_lulus;
+            $showFields['tahun_lulus'] = $user->tahun_lulus;
         }
 
         $systemFieldKeys = [
@@ -123,7 +120,8 @@ class PengajuanController extends Controller
             array_diff($dynamicFields, $excludeFields)
         );
 
-        return view('pages.pengajuan.create',
+        return view(
+            'pages.pengajuan.create',
             compact(
                 'template',
                 'formFields',
@@ -133,9 +131,6 @@ class PengajuanController extends Controller
         );
     }
 
-    /**
-     * Simpan pengajuan
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -149,7 +144,7 @@ class PengajuanController extends Controller
 
         $mataKuliahId = null;
 
-        if ( (int) $request->template_surat_id === 2 && !empty($request->fields['kode_mata_kuliah'])) {
+        if ((int) $request->template_surat_id === 2 && !empty($request->fields['kode_mata_kuliah'])) {
             $mataKuliah = MataKuliah::where('kode', $request->fields['kode_mata_kuliah'])->first();
             $mataKuliahId = $mataKuliah?->id;
         }
@@ -174,13 +169,11 @@ class PengajuanController extends Controller
             ->with('success', 'Pengajuan surat berhasil dibuat');
     }
 
-    public function show(Pengajuan $pengajuan){
-        //
-    }
+//    public function show(Pengajuan $pengajuan)
+//    {
+//        //
+//    }
 
-    /**
-     * Detail pengajuan
-     */
     public function detail(Pengajuan $pengajuan)
     {
         $pengajuan->load([
@@ -264,8 +257,8 @@ class PengajuanController extends Controller
             'periode_semester' => $periodeSemester->nama,
         ];
 
-        if ($pengajuan->template_surat_id == 1){
-           $showFields['alamat_mahasiswa'] = $mahasiswa->alamat;
+        if ($pengajuan->template_surat_id == 1) {
+            $showFields['alamat_mahasiswa'] = $mahasiswa->alamat;
         }
 
         $systemFieldKeys = [
@@ -283,14 +276,15 @@ class PengajuanController extends Controller
             array_diff($dynamicFields, array_keys($showFields), $systemFieldKeys)
         );
 
-        return view('pages.pengajuan.edit',
+        return view(
+            'pages.pengajuan.edit',
             compact(
                 'template',
                 'formFields',
                 'showFields',
-                'pengajuan' ,
+                'pengajuan',
                 'mataKuliahOptions',
-                )
+            )
         );
     }
 
@@ -323,7 +317,7 @@ class PengajuanController extends Controller
 
     public function destroy(Pengajuan $pengajuan)
     {
-         $pengajuan->update([
+        $pengajuan->update([
             'status' => Pengajuan::status_dibatalkan,
         ]);
 
@@ -332,7 +326,8 @@ class PengajuanController extends Controller
             ->with('success', 'Pengajuan berhasil dibatalkan');
     }
 
-    public function history(){
+    public function history()
+    {
         $mahasiswa = auth('mahasiswa')->user();
 
         $pengajuans = Pengajuan::with(['templateSurat', 'periodeSemester', 'mahasiswa'])
@@ -340,7 +335,7 @@ class PengajuanController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-            return view('pages.pengajuan.history', compact('pengajuans'));
+        return view('pages.pengajuan.history', compact('pengajuans'));
     }
 
     public function prosesPengajuan()
@@ -350,7 +345,7 @@ class PengajuanController extends Controller
         $pengajuans = Pengajuan::with(['templateSurat', 'periodeSemester', 'mahasiswa'])
             ->where('status', '=', 1)
             ->byProgramStudi($user)
-            ->orderByDesc('updated_at')
+            ->orderBy('updated_at')
             ->get();
 
         return view('pages.pengajuan.proses', compact('pengajuans'));
@@ -360,8 +355,8 @@ class PengajuanController extends Controller
     {
         abort_if($pengajuan->status !== Pengajuan::status_dalam_pengajuan, 403);
 
-        if ($pengajuan->templateSurat->nama == 'Laporan Hasil Studi Mahasiswa'){
-           return view('pages.pengajuan.lhsm',  [
+        if ($pengajuan->templateSurat->nama == 'Laporan Hasil Studi Mahasiswa') {
+            return view('pages.pengajuan.lhsm',  [
                 'pengajuan' => $pengajuan,
                 'template'  => $pengajuan->templateSurat,
             ]);
@@ -430,7 +425,12 @@ class PengajuanController extends Controller
         $data['kode_surat'] = $kodeSurat;
 
         $qr = SuratDataBuilder::generateQrImage($pengajuan);
-        $data['qr_code'] = view('components.qr-code', ['qr' => $qr])->render();
+        $data['qr_code'] = view('components.qr-code', [
+            'qr' => $qr,
+            'tanggal_surat' => $data['tanggal_surat'],
+            'nama_kaprodi' => $data['nama_kaprodi'],
+
+        ])->render();
 
         $html = Blade::render(
             html_entity_decode($template->xml_content, ENT_QUOTES | ENT_HTML5),
@@ -448,7 +448,7 @@ class PengajuanController extends Controller
         return $fileName;
     }
 
-   public function accept(Pengajuan $pengajuan)
+    public function accept(Pengajuan $pengajuan)
     {
         DB::transaction(function () use ($pengajuan) {
 
@@ -473,7 +473,6 @@ class PengajuanController extends Controller
 
             $pengajuan->mahasiswa->notify(new PengajuanStatusNotification($pengajuan));
         });
-
 
         return redirect()
             ->route('pengajuan.proses.pengajuan')
@@ -501,7 +500,8 @@ class PengajuanController extends Controller
             ->with('success', 'Pengajuan berhasil ditolak');
     }
 
-    public function historyPengajuanStaff(){
+    public function historyPengajuanStaff()
+    {
 
         $user = auth()->user()->program_studi_id;
 
@@ -531,7 +531,7 @@ class PengajuanController extends Controller
         return Storage::disk('public')->download($pengajuan->file_path, $fileName);
     }
 
-//    Buat urus Laporan Hasil Studi Mahasiswa
+    //    Buat urus Laporan Hasil Studi Mahasiswa
     public function previewLhsm(Request $request, Pengajuan $pengajuan)
     {
         $request->validate([
@@ -540,15 +540,16 @@ class PengajuanController extends Controller
 
         $tempPath = $request->file('file')->store('temp/lhsm', 'public');
 
-        session(['lhsm_file_'.$pengajuan->id => $tempPath]);
+        session(['lhsm_file_' . $pengajuan->id => $tempPath]);
 
         return view('pages.pengajuan.lhsm-preview', [
             'pengajuan' => $pengajuan,
-            'file' => asset('storage/'.$tempPath)
+            'file' => asset('storage/' . $tempPath)
         ]);
     }
 
-    public function acceptLhsm(Request $request, Pengajuan $pengajuan){
+    public function acceptLhsm(Request $request, Pengajuan $pengajuan)
+    {
         $request->validate([
             'x' => 'required',
             'y' => 'required',
@@ -556,11 +557,11 @@ class PengajuanController extends Controller
             'canvas_height' => 'required',
         ]);
 
-        $tempPath = session('lhsm_file_'.$pengajuan->id);
+        $tempPath = session('lhsm_file_' . $pengajuan->id);
         abort_if(!$tempPath, 400, 'File belum diupload');
 
         $pdf = new Fpdi();
-        $fullPath = storage_path('app/public/'.$tempPath);
+        $fullPath = storage_path('app/public/' . $tempPath);
         $pageCount = $pdf->setSourceFile($fullPath);
 
         $template = $pengajuan->templateSurat;
@@ -572,7 +573,7 @@ class PengajuanController extends Controller
         }
 
         $qr = SuratDataBuilder::generateQrImage($pengajuan);
-        $qrFile = storage_path('app/temp_qr_'.$pengajuan->id.'.png');
+        $qrFile = storage_path('app/temp_qr_' . $pengajuan->id . '.png');
         file_put_contents($qrFile, base64_decode(explode(',', $qr)[1]));
 
         for ($i = 1; $i <= $pageCount; $i++) {
@@ -610,7 +611,7 @@ class PengajuanController extends Controller
             }
         }
 
-        $outputPath = 'surat/'.uniqid().'.pdf';
+        $outputPath = 'surat/' . uniqid() . '.pdf';
         Storage::disk('public')->put($outputPath, $pdf->Output('S'));
 
         if (file_exists($qrFile)) unlink($qrFile);
@@ -622,7 +623,7 @@ class PengajuanController extends Controller
         ]);
 
         Storage::disk('public')->delete($tempPath);
-        session()->forget('lhsm_file_'.$pengajuan->id);
+        session()->forget('lhsm_file_' . $pengajuan->id);
 
         $pengajuan->mahasiswa->notify(new PengajuanStatusNotification($pengajuan));
 

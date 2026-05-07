@@ -13,7 +13,7 @@
         </p>
       </div>
       <div>
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login-mahasiswa') }}">
           @csrf
           <div class="space-y-5">
             <!-- Kode User -->

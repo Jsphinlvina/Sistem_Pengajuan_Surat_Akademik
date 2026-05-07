@@ -97,7 +97,8 @@
 
     $(document).ready(function () {
         $('#my-table').DataTable({
-            lengthMenu: [5, 10, 25, 50]
+            lengthMenu: [5, 10, 25, 50],
+            order: []
         });
 });
 </script>
