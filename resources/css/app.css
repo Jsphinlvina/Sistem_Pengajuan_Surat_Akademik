@@ -29,6 +29,14 @@ layer(base);
   }
 }
 
+.dt-input{
+    padding-right: 2rem !important;
+    min-width: 70px;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    background-position: right 0.5rem center;
+}
+
 .menu-item {
   @apply text-theme-sm relative flex items-center gap-3 rounded-lg px-3 py-2 font-medium;
 }

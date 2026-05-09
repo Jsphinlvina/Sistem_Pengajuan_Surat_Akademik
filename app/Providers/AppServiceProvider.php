@@ -36,15 +36,15 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Gate::define('admin', function ($user) {
+        Gate::define('admin', function () {
             return auth()->user()->role === 0;
             });
 
-        Gate::define('staff', function ($user) {
+        Gate::define('staff', function () {
             return auth()->user()->role === 1;
             });
 
-        Gate::define('student', function ($user) {
+        Gate::define('student', function () {
             return auth()->user() instanceof Mahasiswa;
         });
     }

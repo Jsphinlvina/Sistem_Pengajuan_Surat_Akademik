@@ -10,16 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 
 {
-    private function getProgramStudiFromKode($kode)
-    {
-        $kodeProdi = substr($kode, 0, 2);
-        return ProgramStudi::where('kode', $kodeProdi)->first();
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+   public function index()
     {
         $users = User::with('programStudi')->get();
         return view('pages.user.index', compact('users'));
