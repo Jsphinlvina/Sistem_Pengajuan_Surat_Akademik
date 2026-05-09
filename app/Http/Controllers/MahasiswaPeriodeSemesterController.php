@@ -2,25 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mahasiswa;
 use App\Models\MahasiswaPeriodeSemester;
-use App\Models\PeriodeSemester;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class MahasiswaPeriodeSemesterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
        //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
