@@ -198,7 +198,7 @@ class PengajuanController extends Controller
             }
         }
 
-
+        $mahasiswa = collect($pengajuan->data_pengajuan['mahasiswa'] ?? []);
         $showFields = [
             'nama_mahasiswa'   => $pengajuan->mahasiswa->name,
             'email_mahasiswa'  => $pengajuan->mahasiswa->email,
